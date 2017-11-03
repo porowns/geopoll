@@ -1,69 +1,24 @@
- <!DOCTYPE html>
- <html lang="en">
-
- <head>
-     <title>GeoPoll</title>
-
-
+<head>
+     <!-- CDN Libraries -->
      <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+     <script src="/static/js/particles.min.js"></script>
+     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+     <!-- Particles.js Configuration -->
+     <link href="/static/css/homepage.css" rel="stylesheet">
 
-     <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
-
- </head>
-
- <body>
-
-        <div class="container">
-            <div class="header">
-                <nav>
-                    <ul class="nav nav-pills pull-right">
-                        <li role="presentation" class="active"><a href="#">Home</a>
-                        </li>
-                        <li role="presentation"><a href="#">Sign In</a>
-                        </li>
-                        <li role="presentation"><a href="showSignUp">Sign Up</a>
-                        </li>
-                    </ul>
-                </nav>
-                <h3 class="text-muted">GeoPoll App</h3>
-            </div>
-
-            <div class="jumbotron">
-                <h1>GeoPoll</h1>
-                <p class="lead"></p>
-                <p><a class="btn btn-lg btn-success" href="showSignUp" role="button">Sign up now</a>
-                </p>
-            </div>
-
-            <div class="row marketing">
-                <div class="col-lg-6">
-                    <h4>GeoPoll</h4>
-                    <p>Some text here</p>
-
-                    <h4>GeoPoll</h4>
-                    <p>More text over here</p>
-
-                    <h4>GeoPoll</h4>
-                    <p>Yet more text</p>
-                </div>
-
-                <div class="col-lg-6">
-                    <h4>GeoPoll</h4>
-                    <p>Latest Poll</p>
-
-                    <h4>GeoPoll</h4>
-                    <p>Another Poll</p>
-
-                    <h4>GeoPoll</h4>
-                    <p>Text about a Poll</p>
-                </div>
-            </div>
-
-            <footer class="footer">
-                <p>&copy;Python Fall 2017</p>
-            </footer>
-
-        </div>
- </body>
-
- </html>
+</head>
+<!-- PARTICLES.JS DIV -->
+<div id="particles-js"></div>
+<!-- MAIN CONTENT -->
+<div class="container-fluid title-container">
+      <h1>Geopoll.io</h1>
+      <p>Real-time polling for geolocation and demographics.</p>
+      <hr>
+      <button type="button" class="btn btn-success btn-lg">Create a Poll</button>
+      <br>
+      <br>
+      <button type="button" class="btn btn-info btn-lg">Source Code</button>
+</div>
+<!-- LOAD PARTICLES CONFIG -->
+<script src="/static/js/homepage.js"></script>
+</body>
