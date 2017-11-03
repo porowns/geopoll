@@ -1,4 +1,4 @@
-# geopoll
+# Geopoll.io
 Python project for CIS 4930.
 
 **Team Members:** Kaleb Porter, Keaton Clements, Nick Kelton
