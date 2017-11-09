@@ -1,8 +1,6 @@
 # Geopoll.io
 Python project for CIS 4930.
 
-**Team Members:** Kaleb Porter, Keaton Clements, Nick Kelton
-
 **Project Title:** Geopoll.io
 
 **Geopoll.io** will be a polling web application (similar to strawpoll), where users can create surveys to gather geolocation data and demographics about a community. We will utilize the Google Maps API for geolocation. It will be a Flask web application (w/ SQLAlchemy) with the following,
