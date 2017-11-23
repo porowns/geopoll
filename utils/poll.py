@@ -1,8 +1,8 @@
 def create_poll():
     pass
-def update_poll():
+def update_poll(poll):
     pass
-def delete_poll():
+def delete_poll(poll):
     pass
-def view_poll():
+def view_poll(poll):
     pass
