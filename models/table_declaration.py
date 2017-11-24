@@ -32,6 +32,7 @@ class Question(Base):
     question_id = Column(Integer, primary_key=True)
     question_type = ChoiceType(QUESTION_TYPES)
     question_text = Column(String(50))
+    question_poll_id = Column(Integer, ForeignKey('polls.poll_id'))
 
 class Answer(Base):
     __tablename__ = "answers"
@@ -41,14 +42,15 @@ class Answer(Base):
 class Poll(Base):
     __tablename__= 'polls'
     poll_id = Column(Integer, primary_key=True)
-    poll_user = relationship("User", backref=backref("user", uselist=False))
+    poll_title = Column(String(50))
+    poll_user_id = Column(Integer, ForeignKey('users.user_id'))
     poll_questions = relationship("Question", secondary=poll_question_relationship)
     poll_responses = relationship("PollResponse")
 
 class PollResponse(Base):
     __tablename__ = 'poll_responses'
     poll_response_id = Column(Integer, primary_key=True)
-    poll_response_user = relationship("User", backref=backref("user", uselist=False))
+    poll_response_user = Column(Integer, ForeignKey('users.user_id'))
     poll_id = Column(Integer, ForeignKey('polls.poll_id'))
 
 Base.metadata.create_all(engine)

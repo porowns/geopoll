@@ -1,6 +1,6 @@
 from flask import Flask, render_template, json, request
 
-from models.table_whisperer import insert_new_user, account_sign_in
+from models.user_whisperer import insert_new_user, account_sign_in
 
 app = Flask(__name__)
 
