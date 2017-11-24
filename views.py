@@ -2,6 +2,8 @@ from flask import Flask, render_template, json, request
 
 from models.user_whisperer import insert_new_user, account_sign_in
 
+from models.poll_whisperer import insert_new_poll, insert_new_question
+
 app = Flask(__name__)
 
 
@@ -51,6 +53,23 @@ def signIn():
 #def profile(user_id):
     # set up user page
 
+
+@app.route('/showCreatePoll')
+def showCreatePoll():
+    return render_template('createpoll.html')
+
+
+@app.route('/createPoll', methods=['POST'])
+def createPoll():
+    # Get user from user query
+    _user = None
+    _poll_name = request.form['pollName']
+
+    if _user and _poll_name:
+        insert_new_poll(_poll_name, _user)
+        return json.dumps({'html':'<span>All fields good!</span>'})
+    else:
+        return json.dumps({'html':'<span>Enter the required fields</span>'})
 
 if __name__ == '__main__':
     app.run()
