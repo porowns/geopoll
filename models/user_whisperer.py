@@ -39,3 +39,14 @@ def account_sign_in(accName, pword):
         return False
 
 
+def user_query(data, opt=0):
+    user_db_session = sessionmaker(bind=engine)
+    session = user_db_session()
+    q = None
+    if opt is 0: q = session.query(User).filter_by(user_id=data).first()
+    if opt is 1: q = session.query(User).filter_by(user_name=data).first()
+    if opt is 2: q = session.query(User).filter_by(user_email=data).first()
+    if opt is 3: q = session.query(User).filter_by(user_pword=data).first()
+    session.close()
+    return q
+
