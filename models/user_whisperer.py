@@ -9,7 +9,7 @@ def insert_new_user(name, email, pword):
     user_db_session = sessionmaker(bind=engine)
     session = user_db_session()
     # insert user
-    new_user = User(user_name=name, user_email =email, user_pword=pword)
+    new_user = User(user_name=name, user_email=email, user_pword=pword)
     session.add(new_user)
     session.commit()
 

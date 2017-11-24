@@ -1,20 +1,42 @@
 import unittest
-import utils.user as User
+from models.table_declaration import User, engine
+from models.user_whisperer import insert_new_user, account_sign_in, user_query
 
 class TestUserMethods(unittest.TestCase):
 
     def testUserCreate(self):
-        self.user = User.create_user()
+        name = 'name'
+        password = 'password'
+        email = 'email@email.com'
+        insert_new_user(name, password, email)
         print ("Created user")
         """
         Once create_user is made we will assert that self.user 
         has all the desired properties here
         """
 
+    def testUserQuery(self):
+        name = 'name'
+        email = 'email@email.com'
+        password = 'password'
+        insert_new_user(name, email, password)
+        # Query by name
+        nameQuery = user_query(name, 1)
+        self.assertTrue(nameQuery.user_name == name)
+        self.assertTrue(nameQuery.user_email == email)
+        self.assertTrue(nameQuery.user_pword == password)
+
+        emailQuery = user_query(email, 2)
+        self.assertTrue(emailQuery.user_name == name)
+        self.assertTrue(emailQuery.user_email == email)
+        self.assertTrue(emailQuery.user_pword == password)
+
+        pwordQuery = user_query(password, 3)
+        self.assertTrue(pwordQuery.user_name == name)
+        self.assertTrue(pwordQuery.user_email == email)
+        self.assertTrue(pwordQuery.user_pword == password)
+
     def testUserUpdate(self):
-        self.user = User.create_user()
-        # Update user with new properties here
-        User.update_user(self.user)
         print ("Updated user")
         """
         Once update_user is made we will assert that self.user's 
@@ -22,8 +44,6 @@ class TestUserMethods(unittest.TestCase):
         """
 
     def testUserDelete(self):
-        self.user = User.create_user()
-        User.delete_user(self.user)
         print ("Deleted user")
         """
         Once delete_user is made we will assert that self.user

@@ -1,8 +1,8 @@
 from flask import Flask, render_template, json, request
 
 from models.user_whisperer import insert_new_user, account_sign_in
-
 from models.poll_whisperer import insert_new_poll, insert_new_question
+from models.table_declaration import User
 
 app = Flask(__name__)
 
@@ -61,8 +61,8 @@ def showCreatePoll():
 
 @app.route('/createPoll', methods=['POST'])
 def createPoll():
-    # Get user from user query
-    _user = None
+    # Get user from user query and replace this generic user
+    _user = User('test', 'test', 'test')
     _poll_name = request.form['pollName']
 
     if _user and _poll_name:
