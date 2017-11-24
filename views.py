@@ -47,5 +47,10 @@ def signIn():
         return json.dumps({'html': '<span>Enter the required fields</span>'})
 
 
+#@app.route('/profile/<user_id>')
+#def profile(user_id):
+    # set up user page
+
+
 if __name__ == '__main__':
     app.run()
