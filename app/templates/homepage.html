@@ -7,6 +7,7 @@
      <link href="/static/css/homepage.css" rel="stylesheet">
 
 </head>
+<body>
 <!-- PARTICLES.JS DIV -->
 <div id="particles-js"></div>
 <!-- MAIN CONTENT -->
@@ -14,10 +15,10 @@
       <h1>Geopoll.io</h1>
       <p>Real-time polling for geolocation and demographics.</p>
       <hr>
-      <button type="button" class="btn btn-success btn-lg">Create a Poll</button>
+      <button id="create_poll_btn" type="button" class="btn btn-success btn-lg">Create a Poll</button>
       <br>
       <br>
-      <button id="create_btn" type="button" class="btn btn-success btn-lg">Create Account</button>
+      <button id="create_account_btn" type="button" class="btn btn-success btn-lg">Create Account</button>
       <br>
       <br>
       <button id="sign_in_btn" type="button" class="btn btn-success btn-lg">Sign In</button>
@@ -29,7 +30,12 @@
 <script src="/static/js/homepage.js"></script>
 <!-- BUTTON TRANSPORTATION -->
 <script type="text/javascript">
-    document.getElementById("create_btn").onclick = function () {
+    document.getElementById("create_poll_btn").onclick = function() {
+    location.href = "showCreatePoll";
+    }
+</script>
+<script type="text/javascript">
+    document.getElementById("create_account_btn").onclick = function () {
     location.href = "showSignUp";
     }
 </script>
