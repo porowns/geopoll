@@ -1,6 +1,6 @@
-import sqlalchemy
-from sqlalchemy.orm import sessionmaker, session
-from table_declaration import Poll, PollResponse, Question, Answer, engine, inspect, Table
+from sqlalchemy.orm import sessionmaker
+
+from app.models.table_declaration import Poll, Question, engine
 
 
 def insert_new_poll(title, user):
