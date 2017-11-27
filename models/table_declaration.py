@@ -28,16 +28,29 @@ class User(Base):
     user_pword = Column(String(12))
 
 class Question(Base):
+    """
+        Questions have an ID, type (choice or response), and text.
+        Instead of making a new Choice() object, there is a choices
+        string that uses comma delimited answers. (e.g one,two,three)
+    """
     __tablename__ = 'questions'
     question_id = Column(Integer, primary_key=True)
     question_type = ChoiceType(QUESTION_TYPES)
+    question_choices = Column(String(256))
     question_text = Column(String(50))
     question_poll_id = Column(Integer, ForeignKey('polls.poll_id'))
 
 class Answer(Base):
+    """
+        Answers are attached to a single question.
+        Each answer has answer text, which can be a fill-in blank answer,
+        or a modal selection from a question with choices.
+
+    """
     __tablename__ = "answers"
     answer_id = Column(Integer, primary_key=True)
-    poll_answer = Column(String(50))
+    question_id = Column(Integer, ForeignKey('questions.question_id'))
+    answer_text = Column(String(50))
 
 class Poll(Base):
     __tablename__= 'polls'
