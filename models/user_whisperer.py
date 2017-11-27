@@ -9,7 +9,7 @@ def insert_new_user(name, email, pword):
     user_db_session = sessionmaker(bind=engine)
     session = user_db_session()
     # insert user
-    new_user = User(user_name=name, user_email =email, user_pword=pword)
+    new_user = User(user_name=name, user_email=email, user_pword=pword)
     session.add(new_user)
     session.commit()
 
@@ -38,4 +38,15 @@ def account_sign_in(accName, pword):
         session.close()
         return False
 
+
+def user_query(data, opt=0):
+    user_db_session = sessionmaker(bind=engine)
+    session = user_db_session()
+    q = None
+    if opt is 0: q = session.query(User).filter_by(user_id=data).first()
+    if opt is 1: q = session.query(User).filter_by(user_name=data).first()
+    if opt is 2: q = session.query(User).filter_by(user_email=data).first()
+    if opt is 3: q = session.query(User).filter_by(user_pword=data).first()
+    session.close()
+    return q
 

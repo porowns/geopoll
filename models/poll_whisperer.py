@@ -2,6 +2,7 @@ import sqlalchemy
 from sqlalchemy.orm import sessionmaker, session
 from table_declaration import Poll, PollResponse, Question, Answer, engine, inspect, Table
 
+
 def insert_new_poll(title, user):
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -13,8 +14,7 @@ def insert_new_poll(title, user):
     session.commit()
     session.close()
 
-# basic blank text question
-def insert_new_question(question_text, poll_id):
+def insert_new_question(question_type, question_text, poll_id):
     # connect to database
     Session = sessionmaker(bind=engine)
     session = Session()
