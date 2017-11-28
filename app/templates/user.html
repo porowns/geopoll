@@ -1,10 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
     <title>GeoUser Page</title>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+
 </head>
 <body>
-    <h1>User: user.user_name</h1>
+    <div class="container">
+        <div class="header">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+
+                    <li role="presentation" class="active"><a href="{{url_for('user',user_name=user.user_name)}}">Home</a>
+                    </li>
+                    <li role="presentation" class="active"><a href="#">Edit Info</a>
+                    </li>
+                    <li role="presentation" class="active"><a href="#">Create Poll</a>
+                    </li>
+                    <li role="presentation" class="active"><a href="{{url_for('signOut')}}">SignOut</a>
+                    </li>
+                </ul>
+            </nav>
+            <h2 class="text-muted">  {{user.user_name}}</h2>
+        </div>
+        <div class="jumbotron">
+            <img src="{{user.avatar(128)}}">
+        </div>
+
+    </div>
 </body>
 </html>

@@ -1,11 +1,13 @@
 from sqlalchemy.orm import sessionmaker
+from werkzeug.security import check_password_hash
+
 from app import db, models
 from app.models.table_declaration import User
 
 
 def insert_new_user(name, email, pword):
     # create new user
-    new_user = User(user_name=name, user_email =email, user_pword=pword)
+    new_user = User(user_name=name, user_email=email, user_pword=pword)
     # add to the db
     db.session.add(new_user)
     db.session.commit()
@@ -13,15 +15,16 @@ def insert_new_user(name, email, pword):
 
 
 def account_sign_in(accName, pword):
-    q = None
     if '@' in accName:
         email = accName
-        q = db.session.query(User).filter_by(user_email=email).filter_by(user_pword=pword).first()
+        q = db.session.query(User).filter_by(user_email=email).first()
     else:
         name = accName
-        q = db.session.query(User).filter_by(user_name=name).filter_by(user_pword=pword).first()
+        q = db.session.query(User).filter_by(user_name=name).first()
     db.session.close()
-    return q
+    if check_password_hash(q.user_pword, pword):
+        return q
+    return None
 
 
 def user_query(data, opt=0):
@@ -33,3 +36,10 @@ def user_query(data, opt=0):
     db.session.close()
     return q
 
+
+def user_exists(user_name):
+    q = db.session.query(User).filter_by(user_name=user_name).first()
+    if q is None:
+        return False
+    else:
+        return True

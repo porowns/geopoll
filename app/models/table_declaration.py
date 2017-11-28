@@ -1,3 +1,5 @@
+from hashlib import md5
+
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -26,8 +28,11 @@ class User(db.Model):
     __tablename__ = 'users'
     user_id = db.Column(db.Integer,Sequence('user_id_seq'), primary_key=True)
     user_name = db.Column(db.String(20), unique=True)
-    user_email = db.Column(db.String(20), unique=True)
-    user_pword = db.Column(db.String(15))
+    user_email = db.Column(db.String(50), unique=True)
+    user_pword = db.Column(db.String(80))
+
+    def avatar(self, size):
+        return 'http://www.gravatar.com/avatar/%s?d=mm&s=%d' % (md5(self.user_email.encode('utf-8')).hexdigest(), size)
 
     @property
     def is_authenticated(self):
@@ -46,18 +51,30 @@ class User(db.Model):
 
 
 class Question(db.Model):
+    """
+        Questions have an ID, type (choice or response), and text.
+        Instead of making a new Choice() object, there is a choices
+        string that uses comma delimited answers. (e.g one,two,three)
+    """
     __tablename__ = 'questions'
     question_id = db.Column(db.Integer, primary_key=True)
     question_type = ChoiceType(QUESTION_TYPES)
+    question_choices = db.Column(db.String(256))
     question_text = db.Column(db.String(50))
     question_poll_id = db.Column(db.Integer, ForeignKey('polls.poll_id'))
 
 
 class Answer(db.Model):
+    """
+        Answers are attached to a single question.
+        Each answer has answer text, which can be a fill-in blank answer,
+        or a modal selection from a question with choices.
+
+    """
     __tablename__ = "answers"
     answer_id = db.Column(db.Integer, primary_key=True)
     poll_answer = db.Column(db.String(50))
-
+    answer_text = db.Column(db.String(50))
 
 class Poll(db.Model):
     __tablename__= 'polls'
