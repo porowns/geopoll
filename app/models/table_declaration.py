@@ -30,6 +30,11 @@ class User(db.Model):
     user_name = db.Column(db.String(20), unique=True)
     user_email = db.Column(db.String(50), unique=True)
     user_pword = db.Column(db.String(80))
+    user_age = db.Column(db.Integer)
+    user_race = db.Column(db.String)
+    user_gender = db.Column(db.String)
+    user_edu = db.Column(db.String)
+
 
     def avatar(self, size):
         return 'http://www.gravatar.com/avatar/%s?d=mm&s=%d' % (md5(self.user_email.encode('utf-8')).hexdigest(), size)

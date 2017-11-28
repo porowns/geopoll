@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>GeoUser Edit</title>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+    {% import "bootstrap/wtf.html" as wtf %}
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2 class="text-muted"> Edit {{user.user_name}}</h2>
+        </div>
+        <div class="jumbotron">
+            <form class="form-signin" method="POST" action="edit">
+                {{form.hidden_tag()}}
+                {{wtf.form_field(form.age)}}
+                {{wtf.form_field(form.race)}}
+                {{wtf.form_field(form.gender)}}
+                {{wtf.form_field(form.education)}}
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Update Info</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

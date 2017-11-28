@@ -16,7 +16,7 @@
 
                     <li role="presentation" class="active"><a href="{{url_for('user',user_name=user.user_name)}}">Home</a>
                     </li>
-                    <li role="presentation" class="active"><a href="#">Edit Info</a>
+                    <li role="presentation" class="active"><a href="{{url_for('edit',user_name=user.user_name)}}">Edit Info</a>
                     </li>
                     <li role="presentation" class="active"><a href="#">Create Poll</a>
                     </li>
@@ -26,10 +26,17 @@
             </nav>
             <h2 class="text-muted">  {{user.user_name}}</h2>
         </div>
-        <div class="jumbotron">
-            <img src="{{user.avatar(128)}}">
+        <div style="height: 200px;" class="jumbotron">
+            <div style="float:left;">
+                <img src="{{user.avatar(128)}}">
+            </div>
+            <div style="float: left; margin-left: 10px;">
+                <h5> <b>Age</b>: {{ user.user_age }}</h5>
+                <h5> <b>Race</b>: {{ user.user_race }}</h5>
+                <h5> <b>Gender</b>: {{ user.user_gender }}</h5>
+                <h5> <b>Education</b>: {{ user.user_edu }}</h5>
+            </div>
         </div>
-
     </div>
 </body>
 </html>

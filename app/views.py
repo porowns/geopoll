@@ -4,13 +4,14 @@ from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import redirect
 from flask_wtf import Form
-from wtforms import validators, StringField, PasswordField
-from wtforms.validators import InputRequired, Length, Email
+from wtforms import validators, StringField, PasswordField, SelectField, IntegerField
+from wtforms.validators import InputRequired, Length, Email, NumberRange
 
-from app import app, lm
+from app import app, lm, db
 from app.models.poll_whisperer import insert_new_poll
 from app.models.table_declaration import User
-from app.models.user_whisperer import insert_new_user, account_sign_in, user_query, user_exists
+from app.models.user_whisperer import insert_new_user, account_sign_in, user_query, user_exists, \
+    update_user_demographic_info, check_users
 
 
 class signUpForm(Form):
@@ -22,6 +23,24 @@ class signUpForm(Form):
 class signInForm(Form):
     name = StringField('username or email', validators=[InputRequired(), Length(min=4,max=50)])
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=50)])
+
+
+class demographicForm(Form):
+    age = IntegerField('age',validators=[InputRequired(),NumberRange(min=0, max=120)])
+    race = SelectField(u'race', choices=[('American Indian or Alaska Native','American Indian or Alaska Native'),
+                                        ('Asian', 'Asian'),('Black or African American','Black or African American'),
+                                        ('Hispanic or Latino','Hispanic or Latino'),
+                                        ('Native Hawaiian or Other Pacific Islander','Native Hawaiian or Other Pacific Islander'),
+                                        ('White','White'),('Other','Other')],
+                       validators=[InputRequired()])
+    gender = SelectField(u'gender', choices=[('Male','Male'),('Female','Female'),('Other','Other')],
+                         validators=[InputRequired()])
+    education = SelectField(u'education', choices=[('High School','High School'),
+                                                  ('College (undergraduate)','College (undergraduate)'),
+                                                  ('College (graduate)','College (graduate)'),
+                                                  ('Technical School','Technical School'),
+                                                   ('Other','Other')],
+                            validators=[InputRequired()])
 
 
 @app.route('/')
@@ -73,6 +92,25 @@ def showSignIn():
 def user(user_name):
     user = user_query(user_name, 1)
     return render_template('user.html', user=user)
+
+
+@app.route('/editInfo/<user_name>',methods=['POST','GET'])
+@login_required
+def edit(user_name):
+    form = demographicForm()
+    if form.validate_on_submit():
+        _age= form.age.data
+        _race = form.race.data
+        _gender = form.gender.data
+        _edu = form.education.data
+
+        user = db.session.query(User).filter_by(user_name=g.user.user_name).first()
+        if user.user_name is not None:
+            print('user_name_in_edit', user.user_name)
+            if update_user_demographic_info(user.user_name, _age, _race, _gender, _edu):
+                print('Demographic Info was successfully updated')
+                return redirect(url_for('user', user_name=user.user_name))
+    return render_template('edit.html', user=g.user, form=form)
 
 
 @app.route('/showCreatePoll', methods=['POST'])
