@@ -4,14 +4,14 @@ from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import redirect
 from flask_wtf import Form
-from wtforms import validators, StringField, PasswordField, SelectField, IntegerField
+from wtforms import validators, StringField, PasswordField, SelectField, IntegerField, RadioField
 from wtforms.validators import InputRequired, Length, Email, NumberRange
 
 from app import app, lm, db
 from app.models.poll_whisperer import insert_new_poll
 from app.models.table_declaration import User
 from app.models.user_whisperer import insert_new_user, account_sign_in, user_query, user_exists, \
-    update_user_demographic_info, check_users
+    update_user_demographic_info, check_users, user_search
 
 
 class signUpForm(Form):
@@ -23,6 +23,13 @@ class signUpForm(Form):
 class signInForm(Form):
     name = StringField('username or email', validators=[InputRequired(), Length(min=4,max=50)])
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=50)])
+
+
+class searchForm(Form):
+    search = StringField(validators=[InputRequired(),Length(min=4,max=50)])
+    search_for = RadioField('search for', validators=[InputRequired()],
+                                        choices=[('user', 'user'),
+                                                 ('poll', 'poll')])
 
 
 class demographicForm(Form):
@@ -113,7 +120,33 @@ def edit(user_name):
     return render_template('edit.html', user=g.user, form=form)
 
 
-@app.route('/showCreatePoll', methods=['POST'])
+@app.route('/showSearch', methods=['POST','GET'])
+@login_required
+def search():
+    form = searchForm()
+    if form.validate_on_submit():
+        search = form.search.data
+        type = form.search_for.data
+        if type == 'user':
+            print(search)
+            print(type)
+            #results = user_search(search)
+            return redirect(url_for('results', search=search))
+        # perform search for poll
+        elif type == 'poll':
+            print('searching for poll')
+
+    return render_template('search.html', form=form)
+
+
+@app.route('/showResults/<search>', methods=['POST','GET'])
+@login_required
+def results(search):
+    results = user_search(search)
+    return render_template('results.html',search=search, results=results, user=g.user)
+
+
+@app.route('/showCreatePoll', methods=['POST','GET'])
 def showCreatePoll():
     # Get user from user query and replace this generic user
     _user = User('test', 'test', 'test')

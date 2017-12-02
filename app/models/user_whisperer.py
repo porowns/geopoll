@@ -33,6 +33,11 @@ def account_sign_in(accName, pword):
     return None
 
 
+def user_search(data):
+    q = db.session.query(User).filter_by(user_name=data).all()
+    return q
+
+
 def user_query(data, opt=0):
     q = None
     if opt is 0: q = db.session.query(User).filter_by(user_id=data).first()

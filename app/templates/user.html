@@ -14,9 +14,11 @@
             <nav>
                 <ul class="nav nav-pills pull-right">
 
-                    <li role="presentation" class="active"><a href="{{url_for('user',user_name=user.user_name)}}">Home</a>
+                    <li role="presentation" class="active"><a href="{{url_for('user',user_name=g.user.user_name)}}">Home</a>
                     </li>
-                    <li role="presentation" class="active"><a href="{{url_for('edit',user_name=user.user_name)}}">Edit Info</a>
+                    <li role="presentation" class="active"><a href="{{url_for('search')}}">Search</a>
+                    </li>
+                    <li role="presentation" class="active"><a href="{{url_for('edit',user_name=g.user.user_name)}}">Edit Info</a>
                     </li>
                     <li role="presentation" class="active"><a href="#">Create Poll</a>
                     </li>

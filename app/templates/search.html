@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>GeoUser Edit</title>
+    <title>GeoSearch</title>
 
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
@@ -10,16 +10,14 @@
 <body>
     <div class="container">
         <div class="header">
-            <h2 class="text-muted"> Edit {{g.user.user_name}}</h2>
+            <h2 class="text-muted">Search</h2>
         </div>
         <div class="jumbotron">
-            <form class="form-signin" method="POST" action="edit">
+            <form class="form-signin" method="POST" action="showSearch">
                 {{form.hidden_tag()}}
-                {{wtf.form_field(form.age)}}
-                {{wtf.form_field(form.race)}}
-                {{wtf.form_field(form.gender)}}
-                {{wtf.form_field(form.education)}}
-                <button class="btn btn-lg btn-primary btn-block" type="submit">Update Info</button>
+                {{wtf.form_field(form.search)}}
+                {{wtf.form_field(form.search_for)}}
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Search</button>
             </form>
         </div>
     </div>
