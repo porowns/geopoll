@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block body %}
+<script>
+  $(document).ready(function() {
+    $("#questionTypeInput").change(function() {
+      if ($(this).val() == "Multiple Choice") {
+        $("#choice_box").show();
+      }
+      else {
+        $("#choice_box").hide();
+      }
+    });
+  });
+</script>
+<form method="POST">
+  {{form.hidden_tag()}}
+  <div class="form-group">
+      <label for="questionTextInput">Question Text</label>
+      <input name="question_text" id="questionTextInput" class="form-control" type="text" placeholder="Insert your question text here">
+    </div>
+    <div class="form-group">
+      <label for="questionTypeInput">Type</label>
+      <select name="question_type" class="form-control" id="questionTypeInput">
+        <option>Free Response</option>
+        <option>Multiple Choice</option>
+      </select>
+    </div>
+    <div id="choice_box" class="form-group" hidden>
+      <label for="questionChoiceInput">Choices</label>
+      <input name="question_choices" id="questionChoiceInput" class="form-control" type="text" placeholder="example,example,example">
+    </div>
+    <button type="submit" class="btn btn-primary pull-right">Add Question</button>
+</form>
+{% endblock %}

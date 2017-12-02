@@ -8,7 +8,7 @@ from wtforms import validators, StringField, PasswordField, SelectField, Integer
 from wtforms.validators import InputRequired, Length, Email, NumberRange
 
 from app import app, lm, db
-from app.models.poll_whisperer import insert_new_poll, poll_search, get_polls_by_user, get_poll
+from app.models.poll_whisperer import insert_new_poll, poll_search, get_polls_by_user, get_poll, insert_new_question
 from app.models.table_declaration import User
 from app.models.user_whisperer import insert_new_user, account_sign_in, user_query, user_exists, \
     update_user_demographic_info, check_users, user_search
@@ -31,9 +31,13 @@ class searchForm(Form):
                                         choices=[('user', 'user'),
                                                  ('poll', 'poll')])
 
-
 class pollForm(Form):
     poll_name = StringField(validators=[InputRequired(), Length(min=4, max=50)])
+
+class pollQuestionAddForm(Form):
+    question_text = StringField(validators=[InputRequired(), Length(min=4, max=50)])
+    question_type = StringField(validators=[InputRequired(), Length(min=0, max=5)])
+    question_choices = StringField(validators=[InputRequired(), Length(min=1, max=50)])
 
 
 class demographicForm(Form):
@@ -160,6 +164,21 @@ def showCreatePoll():
 def poll(poll_id):
     poll = get_poll(poll_id)
     return render_template('poll.html', poll=poll)
+
+@app.route('/poll/<poll_id>/add-question', methods=['post','get'])
+def poll_add_question(poll_id):
+    form = pollQuestionAddForm()
+    print("Start Add Question Method")
+    if request.form:
+        print("Adding Question")
+        print(request.form)
+        print(request.form['question_text'])
+        _question_text = request.form['question_text']
+        _question_choices = request.form['question_choices']
+        insert_new_question(_question_text, _question_choices, poll_id)
+        return redirect(url_for('poll', poll_id=poll_id))
+    poll = get_poll(poll_id)
+    return render_template('poll_add_question.html', poll=poll, form=form)
 
 @app.route('/poll/edit/<poll_id>', methods=['post','get'])
 def poll_edit(poll_id):

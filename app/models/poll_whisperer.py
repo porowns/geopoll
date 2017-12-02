@@ -16,11 +16,6 @@ def insert_new_poll(title, user_name):
 
 def insert_new_question(question_type, question_text, poll_id):
     # connect to database
-    new_question = Question(
-        question_type="response",
-        question_text=question_text,
-        question_poll_id=poll_id
-        )
     # insert question
     db.session.add(new_question)
     db.session.commit()
@@ -28,15 +23,20 @@ def insert_new_question(question_type, question_text, poll_id):
 
 
 # choice based question
-def insert_new__choice(question_text, choices, poll_id):
-    """ Accepts an array of strings, choices."""
-    choices = ",".join(choices)
-    new_question = Question(
-        question_type="choice",
-        question_choices=choices,
-        question_text=question_text,
-        question_poll_id=poll_id
-        )
+def insert_new_question(question_text, choices, poll_id):
+    if choices:
+        new_question = Question(
+            question_type="choice",
+            question_choices=choices,
+            question_text=question_text,
+            question_poll_id=poll_id
+            )
+    else:
+        new_question = Question(
+            question_type="response",
+            question_text=question_text,
+            question_poll_id=poll_id
+            )
     # insert question
     db.session.add(new_question)
     db.session.commit()

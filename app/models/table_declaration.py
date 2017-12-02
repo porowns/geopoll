@@ -63,7 +63,7 @@ class Question(db.Model):
     """
     __tablename__ = 'questions'
     question_id = db.Column(db.Integer, primary_key=True)
-    question_type = ChoiceType(QUESTION_TYPES)
+    question_type = db.Column(db.String(256))
     question_choices = db.Column(db.String(256))
     question_text = db.Column(db.String(50))
     question_poll_id = db.Column(db.Integer, ForeignKey('polls.poll_id'))
