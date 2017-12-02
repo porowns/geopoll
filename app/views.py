@@ -8,7 +8,7 @@ from wtforms import validators, StringField, PasswordField, SelectField, Integer
 from wtforms.validators import InputRequired, Length, Email, NumberRange
 
 from app import app, lm, db
-from app.models.poll_whisperer import insert_new_poll, poll_search, get_polls_by_user
+from app.models.poll_whisperer import insert_new_poll, poll_search, get_polls_by_user, get_poll
 from app.models.table_declaration import User
 from app.models.user_whisperer import insert_new_user, account_sign_in, user_query, user_exists, \
     update_user_demographic_info, check_users, user_search
@@ -157,22 +157,22 @@ def showCreatePoll():
     return render_template('createpoll.html',form=form)
 
 @app.route('/poll/<poll_id>', methods=['post','get'])
-def poll(user_name):
+def poll(poll_id):
     poll = get_poll(poll_id)
     return render_template('poll.html', poll=poll)
 
 @app.route('/poll/edit/<poll_id>', methods=['post','get'])
-def poll_edit(user_name):
+def poll_edit(poll_id):
     poll = get_poll(poll_id)
     return render_template('poll_edit.html', poll=poll)
 
 @app.route('/poll/delete/<poll_id>', methods=['post','get'])
-def poll_delete(user_name):
+def poll_delete(poll_id):
     poll = get_poll(poll_id)
     return render_template('poll_delete.html', poll=poll)
 
 @app.route('/poll/submit/<poll_id>', methods=['post','get'])
-def poll_submit(user_name):
+def poll_submit(poll_id):
     poll = get_poll(poll_id)
     return render_template('poll_submit.html', poll=poll)
 
