@@ -156,6 +156,25 @@ def showCreatePoll():
         return redirect(url_for('user', user_name=g.user.user_name))
     return render_template('createpoll.html',form=form)
 
+@app.route('/poll/<poll_id>', methods=['post','get'])
+def poll(user_name):
+    poll = get_poll(poll_id)
+    return render_template('poll.html', poll=poll)
+
+@app.route('/poll/edit/<poll_id>', methods=['post','get'])
+def poll_edit(user_name):
+    poll = get_poll(poll_id)
+    return render_template('poll_edit.html', poll=poll)
+
+@app.route('/poll/delete/<poll_id>', methods=['post','get'])
+def poll_delete(user_name):
+    poll = get_poll(poll_id)
+    return render_template('poll_delete.html', poll=poll)
+
+@app.route('/poll/submit/<poll_id>', methods=['post','get'])
+def poll_submit(user_name):
+    poll = get_poll(poll_id)
+    return render_template('poll_submit.html', poll=poll)
 
 @app.route('/signout')
 def signOut():
