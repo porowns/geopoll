@@ -1,15 +1,18 @@
 import sqlalchemy
 from sqlalchemy.orm import sessionmaker, session
-from app import db
+from app import db, models
 from app.models.table_declaration import Poll, Question
+from app.models.user_whisperer import user_query
 
 
-def insert_new_poll(title, user):
+def insert_new_poll(title, user_name):
     # insert poll
-    new_poll = Poll(poll_title=title, poll_user_id=user)
+    q = user_query(user_name,1)
+    new_poll = Poll(poll_title=title, poll_user_id=q.user_id)
     db.session.add(new_poll)
     db.session.commit()
     db.session.close()
+
 
 def insert_new_question(question_type, question_text, poll_id):
     # connect to database
@@ -22,6 +25,7 @@ def insert_new_question(question_type, question_text, poll_id):
     db.session.add(new_question)
     db.session.commit()
     db.session.close()
+
 
 # choice based question
 def insert_new__choice(question_text, choices, poll_id):
@@ -37,3 +41,8 @@ def insert_new__choice(question_text, choices, poll_id):
     db.session.add(new_question)
     db.session.commit()
     db.session.close()
+
+
+def poll_search(data):
+    q = db.session.query(Poll).filter_by(poll_title=data).all()
+    return q

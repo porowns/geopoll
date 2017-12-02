@@ -8,7 +8,7 @@ from wtforms import validators, StringField, PasswordField, SelectField, Integer
 from wtforms.validators import InputRequired, Length, Email, NumberRange
 
 from app import app, lm, db
-from app.models.poll_whisperer import insert_new_poll
+from app.models.poll_whisperer import insert_new_poll, poll_search
 from app.models.table_declaration import User
 from app.models.user_whisperer import insert_new_user, account_sign_in, user_query, user_exists, \
     update_user_demographic_info, check_users, user_search
@@ -30,6 +30,10 @@ class searchForm(Form):
     search_for = RadioField('search for', validators=[InputRequired()],
                                         choices=[('user', 'user'),
                                                  ('poll', 'poll')])
+
+
+class pollForm(Form):
+    poll_name = StringField(validators=[InputRequired(), Length(min=4, max=50)])
 
 
 class demographicForm(Form):
@@ -127,36 +131,29 @@ def search():
     if form.validate_on_submit():
         search = form.search.data
         type = form.search_for.data
-        if type == 'user':
-            print(search)
-            print(type)
-            #results = user_search(search)
-            return redirect(url_for('results', search=search))
-        # perform search for poll
-        elif type == 'poll':
-            print('searching for poll')
-
+        return redirect(url_for('results', search=search, type=type))
     return render_template('search.html', form=form)
 
 
-@app.route('/showResults/<search>', methods=['POST','GET'])
+@app.route('/showResults/<type>/<search>', methods=['POST','GET'])
 @login_required
-def results(search):
-    results = user_search(search)
-    return render_template('results.html',search=search, results=results, user=g.user)
+def results(search, type):
+    if type == 'user':
+        results = user_search(search)
+    elif type == 'poll':
+        results = poll_search(search)
+    return render_template('results.html',search=search, results=results, type=type, user=g.user)
 
 
 @app.route('/showCreatePoll', methods=['POST','GET'])
+@login_required
 def showCreatePoll():
-    # Get user from user query and replace this generic user
-    _user = User('test', 'test', 'test')
-    _poll_name = request.form['pollName']
-
-    if _user and _poll_name:
-        insert_new_poll(_poll_name, _user)
-        return json.dumps({'html':'<span>All fields good!</span>'})
-    else:
-        return json.dumps({'html':'<span>Enter the required fields</span>'})
+    form = pollForm()
+    if form.validate_on_submit():
+        _poll_name = form.poll_name.data
+        insert_new_poll(_poll_name, g.user.user_name)
+        return redirect(url_for('user', user_name=g.user.user_name))
+    return render_template('createpoll.html',form=form)
 
 
 @app.route('/signout')

@@ -30,7 +30,12 @@
             <div class="jumbotron">
                 {% for r in results %}
                 <p>
+                    {% if type == 'user' %}
                     <a href="{{url_for('user',user_name=r.user_name)}}">{{r.user_name}}</a>
+                    {% endif %}
+                    {% if type == 'poll' %}
+                    {{r.poll_title}}
+                    {% endif %}
                 </p>
                 {% endfor %}
             </div>
