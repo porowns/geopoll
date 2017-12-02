@@ -8,7 +8,7 @@ from wtforms import validators, StringField, PasswordField, SelectField, Integer
 from wtforms.validators import InputRequired, Length, Email, NumberRange
 
 from app import app, lm, db
-from app.models.poll_whisperer import insert_new_poll, poll_search
+from app.models.poll_whisperer import insert_new_poll, poll_search, get_polls_by_user
 from app.models.table_declaration import User
 from app.models.user_whisperer import insert_new_user, account_sign_in, user_query, user_exists, \
     update_user_demographic_info, check_users, user_search
@@ -102,7 +102,8 @@ def showSignIn():
 @login_required
 def user(user_name):
     user = user_query(user_name, 1)
-    return render_template('user.html', user=user)
+    polls = get_polls_by_user(user.user_id)
+    return render_template('user.html', user=user, polls=list(polls))
 
 
 @app.route('/editInfo/<user_name>',methods=['POST','GET'])

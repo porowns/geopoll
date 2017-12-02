@@ -39,6 +39,33 @@
                 <h5> <b>Education</b>: {{ user.user_edu }}</h5>
             </div>
         </div>
+        <div id="poll_results">
+          <h1>Your Polls</h1>
+          <hr>
+          
+          <table class="table">
+					<thead>
+						<tr>
+							<th scope="col">Poll ID</th>
+							<th scope="col">Poll Name</th>
+							<th scope="col">Responses</th>
+							<th scope="col">Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for poll in polls %}
+						<tr>
+							<th scope="row">{{poll.poll_id}}</th>
+							<td>{{poll.poll_title}}</td>
+							<td>0</td>
+							<td>
+         	 			<button class="btn btn-success" onclick="window.location.href='/poll/{{poll.poll_id}}'">Open</button>
+							</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+					</table>
+        </div>
     </div>
 </body>
 </html>

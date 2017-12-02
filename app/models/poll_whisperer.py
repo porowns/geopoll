@@ -46,3 +46,13 @@ def insert_new__choice(question_text, choices, poll_id):
 def poll_search(data):
     q = db.session.query(Poll).filter_by(poll_title=data).all()
     return q
+
+def get_poll(poll_id):
+    q = db.session.query(Poll).filter_by(poll_id=poll_id).first()
+    db.session.close()
+    return q
+
+def get_polls_by_user(user_id):
+    polls = db.session.query(Poll).filter_by(poll_user_id=user_id).all()
+    db.session.close()
+    return polls
