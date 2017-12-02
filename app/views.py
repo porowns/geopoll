@@ -8,7 +8,7 @@ from wtforms import validators, StringField, PasswordField, SelectField, Integer
 from wtforms.validators import InputRequired, Length, Email, NumberRange
 
 from app import app, lm, db
-from app.models.poll_whisperer import insert_new_poll, poll_search, get_polls_by_user, get_poll, insert_new_question
+from app.models.poll_whisperer import insert_new_poll, poll_search, get_polls_by_user, get_poll, insert_new_question, get_poll_questions
 from app.models.table_declaration import User
 from app.models.user_whisperer import insert_new_user, account_sign_in, user_query, user_exists, \
     update_user_demographic_info, check_users, user_search
@@ -163,7 +163,9 @@ def showCreatePoll():
 @app.route('/poll/<poll_id>', methods=['post','get'])
 def poll(poll_id):
     poll = get_poll(poll_id)
-    return render_template('poll.html', poll=poll)
+    questions = get_poll_questions(poll_id)
+    print(questions)
+    return render_template('poll.html', poll=poll, questions=questions)
 
 @app.route('/poll/<poll_id>/add-question', methods=['post','get'])
 def poll_add_question(poll_id):

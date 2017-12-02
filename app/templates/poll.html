@@ -1,0 +1,10 @@
+<h1>{{poll.poll_title}}</h1>
+<hr>
+{% for question in questions %}
+  <h3>{{question.question_text}}</h3>
+  {% if question.question_type == "response" %}
+  <input name="{{question.question_id}}" class="form-control" type="text" placeholder="Answer to question">
+  {% else %}
+  <!-- choice answer, more work -->
+  {% endif %}
+{% endfor %}
