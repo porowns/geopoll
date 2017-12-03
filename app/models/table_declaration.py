@@ -93,5 +93,6 @@ class Poll(db.Model):
 class PollResponse(db.Model):
     __tablename__ = 'poll_responses'
     poll_response_id = db.Column(db.Integer, primary_key=True)
-    poll_response_user = db.Column(db.Integer, ForeignKey('users.user_id'))
+    poll_response_questions = db.Column(db.String(256))
+    poll_response_answers = db.Column(db.String(256))
     poll_id = db.Column(db.Integer, ForeignKey('polls.poll_id'))

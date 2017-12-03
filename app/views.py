@@ -8,7 +8,7 @@ from wtforms import validators, StringField, PasswordField, SelectField, Integer
 from wtforms.validators import InputRequired, Length, Email, NumberRange
 
 from app import app, lm, db
-from app.models.poll_whisperer import insert_new_poll, poll_search, get_polls_by_user, get_poll, insert_new_question, get_poll_questions
+from app.models.poll_whisperer import insert_new_poll, poll_search, get_polls_by_user, get_poll, insert_new_question, get_poll_questions, insert_new_response
 from app.models.table_declaration import User
 from app.models.user_whisperer import insert_new_user, account_sign_in, user_query, user_exists, \
     update_user_demographic_info, check_users, user_search
@@ -164,8 +164,26 @@ def showCreatePoll():
 def poll(poll_id):
     poll = get_poll(poll_id)
     questions = get_poll_questions(poll_id)
-    print(questions)
-    return render_template('poll.html', poll=poll, questions=questions)
+    question_dictionary = {}
+    for question in questions:
+        if question.question_type == "choice":
+            choices = question.question_choices.split(",")
+            question_dict_list = [question, choices]
+            question_dictionary[question] = choices
+        else:
+            question_dictionary[question] = None
+    print(question_dictionary)
+    if request.method == 'POST':
+        questions = []
+        answers = []
+        for answer in request.form:
+            questions.append(answer)
+            answers.append(request.form[answer])
+        questions = ",".join(questions)
+        answers = ",".join(answers)
+        insert_new_response(poll_id, questions, answers)
+
+    return render_template('poll.html', poll=poll, questions=question_dictionary, user=None)
 
 @app.route('/poll/<poll_id>/add-question', methods=['post','get'])
 def poll_add_question(poll_id):
@@ -187,15 +205,10 @@ def poll_edit(poll_id):
     poll = get_poll(poll_id)
     return render_template('poll_edit.html', poll=poll)
 
-@app.route('/poll/delete/<poll_id>', methods=['post','get'])
-def poll_delete(poll_id):
+@app.route('/poll/<poll_id>/summary', methods=['post','get'])
+def poll_summary(poll_id):
     poll = get_poll(poll_id)
-    return render_template('poll_delete.html', poll=poll)
-
-@app.route('/poll/submit/<poll_id>', methods=['post','get'])
-def poll_submit(poll_id):
-    poll = get_poll(poll_id)
-    return render_template('poll_submit.html', poll=poll)
+    return render_template('poll_summary.html', poll=poll)
 
 @app.route('/signout')
 def signOut():

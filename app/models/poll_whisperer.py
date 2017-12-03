@@ -1,7 +1,7 @@
 import sqlalchemy
 from sqlalchemy.orm import sessionmaker, session
 from app import db, models
-from app.models.table_declaration import Poll, Question
+from app.models.table_declaration import Poll, Question, PollResponse
 from app.models.user_whisperer import user_query
 
 
@@ -49,14 +49,29 @@ def poll_search(data):
 
 def get_poll(poll_id):
     q = db.session.query(Poll).filter_by(poll_id=poll_id).first()
+    db.session.expunge(q)
     db.session.close()
     return q
 
 def get_polls_by_user(user_id):
     polls = db.session.query(Poll).filter_by(poll_user_id=user_id).all()
+    db.session.expunge(polls)
     db.session.close()
     return polls
 
 def get_poll_questions(poll_id):
     questions = db.session.query(Question).filter_by(question_poll_id=poll_id).all()
+    for question in questions:
+        db.session.expunge(question)
     return questions
+
+def insert_new_response(poll_id, questions, answers):
+    poll_response = PollResponse(
+            poll_response_questions=questions,
+            poll_response_answers=answers,
+            poll_id=poll_id
+            )
+    db.session.add(poll_response)
+    db.session.commit()
+    db.session.close()
+

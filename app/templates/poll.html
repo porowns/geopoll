@@ -1,10 +1,22 @@
-<h1>{{poll.poll_title}}</h1>
+<h1>{{poll.poll_title}} by {{user.user_name}}</h1>
+<button class="btn btn-success" onclick="window.location.href='/poll/{{poll.poll_id}}/add-question'">Add Question</button>
+<button class="btn btn-success" onclick="window.location.href='/poll/{{poll.poll_id}}/summary'">View Responses</button>
+<button class="btn btn-success" onclick="window.location.href='/poll/{{poll.poll_id}}/edit'">Edit Poll</button>
 <hr>
-{% for question in questions %}
-  <h3>{{question.question_text}}</h3>
-  {% if question.question_type == "response" %}
-  <input name="{{question.question_id}}" class="form-control" type="text" placeholder="Answer to question">
+<form method="POST">
+{% for key, value in questions.items() %}
+  {% if key.question_type == "response" %}
+	<label for="{{key.question_id}}">{{key.question_text}}</label>
+  <input name="{{key.question_id}}" class="form-control" type="text" placeholder="Enter answer here">
   {% else %}
-  <!-- choice answer, more work -->
-  {% endif %}
+	<label for="{{key.question_id}}">{{key.question_text}}</label>
+	<select name="{{key.question_id}}" class="form-control" id="{{key.question_id}}">
+		{% for choice in value %}
+		<option>{{choice}}</option>
+		{% endfor %}
+	</select>
+	{% endif %}
+	<br>
 {% endfor %}
+<button type="submit">Submit</button>
+</form>
