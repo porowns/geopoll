@@ -55,7 +55,8 @@ def get_poll(poll_id):
 
 def get_polls_by_user(user_id):
     polls = db.session.query(Poll).filter_by(poll_user_id=user_id).all()
-    db.session.expunge(polls)
+    for poll in polls:
+        db.session.expunge(poll)
     db.session.close()
     return polls
 
@@ -75,3 +76,14 @@ def insert_new_response(poll_id, questions, answers):
     db.session.commit()
     db.session.close()
 
+def get_responses(poll_id):
+    responses = db.session.query(PollResponse).filter_by(poll_id=poll_id).all()
+    for response in responses:
+        db.session.expunge(response)
+    return responses
+
+def get_question_type(questions, question_id):
+    """ extract a questions type from a list of questions (used to prevent tons of database calls)"""
+    for question in questions:
+        if question.question_id == question_id:
+            return question.question_type
