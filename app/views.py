@@ -163,11 +163,8 @@ def showCreatePoll():
 def poll(poll_id, user_id):
     poll = get_poll(poll_id)
     user = user_query(poll.poll_user_id, 0)
-    current_user = session['remember_me']
     user = user_query(user_id)
-    #current_user = session['remember_me']
     questions = get_poll_questions(poll_id)
-    #admin = user.user_id == current_user
     question_dictionary = {}
     for question in questions:
         if question.question_type == "choice":
