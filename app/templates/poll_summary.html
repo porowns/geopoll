@@ -6,7 +6,7 @@
 <h1>Responses for {{poll.poll_title}}</h1>
 {% for key, value in summary.items() %}
   {% if key.question_type == 'response' %}
-    <h3>{{key.question_text}}</h1>
+    <h3>{{key.question_text}}</h3>
     <hr>
     {% for val in value %}
     {{val}}
@@ -19,7 +19,7 @@
   {% endif %}
 {% endfor %}
 <hr>
-<a href="/poll/{{poll.poll_id}}" class="btn btn-info">View Poll</a>
+<a href="/poll/{{poll.poll_id}}/{{user.user_id}}" class="btn btn-info">View Poll</a>
 <div id="chart_div"></div>
 <script type="text/javascript">
     function buildCharts() {

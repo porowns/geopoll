@@ -13,7 +13,7 @@ def insert_new_poll(title, user_name):
     db.session.commit()
     db.session.close()
 
-
+'''
 def insert_new_question(question_type, question_text, poll_id):
     # connect to database
     # insert question
@@ -21,6 +21,7 @@ def insert_new_question(question_type, question_text, poll_id):
     db.session.commit()
     db.session.close()
 
+'''
 
 # choice based question
 def insert_new_question(question_text, choices, poll_id):
@@ -46,6 +47,12 @@ def insert_new_question(question_text, choices, poll_id):
 def poll_search(data):
     q = db.session.query(Poll).filter_by(poll_title=data).all()
     return q
+
+
+def poll_search_name(data):
+    q = db.session.query(Poll).filter_by(poll_title=data).first()
+    return q
+
 
 def get_poll(poll_id):
     q = db.session.query(Poll).filter_by(poll_id=poll_id).first()

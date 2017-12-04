@@ -53,7 +53,7 @@
                         <li><a href="{{url_for('user',user_name=g.user.user_name)}}">Home</a></li>
                         <li><a href="{{url_for('showCreatePoll')}}">Create Poll</a></li>
                         <li>
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{user.user_name}} <b class="caret"></b></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{g.user.user_name}} <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="{{url_for('edit',user_name=g.user.user_name)}}">Edit Profile</a></li>
                                 <li><a href="{{url_for('signOut')}}">Logout</a></li>
