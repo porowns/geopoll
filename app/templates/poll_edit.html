@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block body %}
+<form method="POST">
+  <div class="form-group">
+      <label for="questionTextInput">Edit Title</label>
+      <input name="title" id="questionTextInput" class="form-control" type="text" value="{{poll.poll_title}}">
+      <br>
+      <a href="/poll/{{poll.poll_id}}" class="btn btn-info">View Poll</a>
+      <button type="submit" class="btn btn-primary pull-right">Submit</button>
+  </div>
+
+</form>
+{% endblock %}

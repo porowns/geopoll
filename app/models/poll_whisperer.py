@@ -82,3 +82,9 @@ def get_responses(poll_id):
         db.session.expunge(response)
     return responses
 
+def change_poll_title(poll_id, title):
+    poll = get_poll(poll_id)
+    poll.poll_title = title
+    db.session.add(poll)
+    db.session.commit()
+    return True
