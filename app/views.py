@@ -160,7 +160,6 @@ def showCreatePoll():
     return render_template('createpoll.html',form=form)
 
 @app.route('/poll/<poll_id>/<user_id>', methods=['post','get'])
-@login_required
 def poll(poll_id, user_id):
     poll = get_poll(poll_id)
     user = user_query(poll.poll_user_id, 0)
