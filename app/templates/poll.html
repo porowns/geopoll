@@ -3,8 +3,8 @@
 <h1>{{poll.poll_title}} by {{user.user_name}}</h1>
 {% if g.user.user_id == user.user_id %}
 	{% if poll.poll_published == 0 %}
-	<button class="btn btn-primary" onclick="window.location.href='/poll/{{poll.poll_id}}/add-question'">Add Question</button>
-	<button class="btn btn-warning" onclick="window.location.href='/poll/{{poll.poll_id}}/edit'">Edit Poll</button>
+	<button class="btn btn-primary" onclick="window.location.href='/poll/{{poll.poll_id}}/{{user.user_id}}/add-question'">Add Question</button>
+	<button class="btn btn-warning" onclick="window.location.href='/poll/{{poll.poll_id}}/{{user.user_id}}/edit'">Edit Poll</button>
 	<button class="btn btn-danger" onclick="window.location.href='/poll/{{poll.poll_id}}/publish'">Publish</button>
 	{% else %}
 	<button class="btn btn-info" onclick="window.location.href='/poll/{{poll.poll_id}}/{{poll.poll_user_id}}/summary'">View Responses</button>
