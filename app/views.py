@@ -8,7 +8,7 @@ from wtforms import validators, StringField, PasswordField, SelectField, Integer
 from wtforms.validators import InputRequired, Length, Email, NumberRange
 
 from app import app, lm, db
-from app.models.poll_whisperer import insert_new_poll, poll_search, get_polls_by_user, get_poll, insert_new_question, get_poll_questions, insert_new_response, get_responses, change_poll_title
+from app.models.poll_whisperer import insert_new_poll, poll_search, get_polls_by_user, get_poll, insert_new_question, get_poll_questions, insert_new_response, get_responses, change_poll_title, publish_poll
 from app.models.table_declaration import User
 from app.models.user_whisperer import insert_new_user, account_sign_in, user_query, user_exists, \
     update_user_demographic_info, check_users, user_search
@@ -158,7 +158,7 @@ def showCreatePoll():
 @app.route('/poll/<poll_id>', methods=['post','get'])
 def poll(poll_id):
     poll = get_poll(poll_id)
-    user = user_query(poll_id, 0)
+    user = user_query(poll.poll_user_id, 0)
     current_user = session['remember_me']
     questions = get_poll_questions(poll_id)
     admin = user.user_id == current_user
@@ -182,6 +182,11 @@ def poll(poll_id):
         insert_new_response(poll_id, questions, answers)
 
     return render_template('poll.html', poll=poll, questions=question_dictionary, user=user,admin=admin)
+
+@app.route('/poll/<poll_id>/publish', methods=['post','get'])
+def poll_publish(poll_id):
+	publish_poll(poll_id)
+	return redirect(url_for("poll", poll_id=poll_id))
 
 @app.route('/poll/<poll_id>/add-question', methods=['post','get'])
 def poll_add_question(poll_id):

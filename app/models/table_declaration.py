@@ -88,6 +88,7 @@ class Poll(db.Model):
     poll_user_id = db.Column(db.Integer, ForeignKey('users.user_id'))
     poll_questions = db.relationship('Question', backref='q', lazy='dynamic')
     poll_responses = db.relationship('PollResponse', backref='r', lazy='dynamic')
+    poll_published = db.Column(db.Integer)
 
 
 class PollResponse(db.Model):

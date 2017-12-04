@@ -8,7 +8,7 @@ from app.models.user_whisperer import user_query
 def insert_new_poll(title, user_name):
     # insert poll
     q = user_query(user_name,1)
-    new_poll = Poll(poll_title=title, poll_user_id=q.user_id)
+    new_poll = Poll(poll_title=title, poll_user_id=q.user_id, poll_published=0)
     db.session.add(new_poll)
     db.session.commit()
     db.session.close()
@@ -88,3 +88,10 @@ def change_poll_title(poll_id, title):
     db.session.add(poll)
     db.session.commit()
     return True
+
+def publish_poll(poll_id):
+	poll = get_poll(poll_id)
+	poll.poll_published = 1
+	db.session.add(poll)
+	db.session.commit()
+	return True
