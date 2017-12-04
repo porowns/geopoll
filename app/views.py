@@ -35,12 +35,6 @@ class searchForm(Form):
 class pollForm(Form):
     poll_name = StringField(validators=[InputRequired(), Length(min=4, max=50)])
 
-class pollQuestionAddForm(Form):
-    question_text = StringField(validators=[InputRequired(), Length(min=4, max=50)])
-    question_type = StringField(validators=[InputRequired(), Length(min=0, max=5)])
-    question_choices = StringField(validators=[InputRequired(), Length(min=1, max=50)])
-
-
 class demographicForm(Form):
     age = IntegerField('age',validators=[InputRequired(),NumberRange(min=0, max=120)])
     race = SelectField(u'race', choices=[('American Indian or Alaska Native','American Indian or Alaska Native'),
@@ -164,7 +158,10 @@ def showCreatePoll():
 @app.route('/poll/<poll_id>', methods=['post','get'])
 def poll(poll_id):
     poll = get_poll(poll_id)
+    user = user_query(poll_id, 0)
+    current_user = session['remember_me']
     questions = get_poll_questions(poll_id)
+    admin = user.user_id == current_user
     question_dictionary = {}
     for question in questions:
         if question.question_type == "choice":
@@ -184,11 +181,12 @@ def poll(poll_id):
         answers = ",".join(answers)
         insert_new_response(poll_id, questions, answers)
 
-    return render_template('poll.html', poll=poll, questions=question_dictionary, user=None)
+    return render_template('poll.html', poll=poll, questions=question_dictionary, user=user,admin=admin)
 
 @app.route('/poll/<poll_id>/add-question', methods=['post','get'])
 def poll_add_question(poll_id):
-    form = pollQuestionAddForm()
+    poll = get_poll(poll_id)
+    user = user_query(poll_id, 0)
     print("Start Add Question Method")
     if request.form:
         print("Adding Question")
@@ -199,16 +197,18 @@ def poll_add_question(poll_id):
         insert_new_question(_question_text, _question_choices, poll_id)
         return redirect(url_for('poll', poll_id=poll_id))
     poll = get_poll(poll_id)
-    return render_template('poll_add_question.html', poll=poll, form=form)
+    return render_template('poll_add_question.html', poll=poll,user=user)
 
 @app.route('/poll/<poll_id>/edit', methods=['post','get'])
 def poll_edit(poll_id):
     poll = get_poll(poll_id)
-    return render_template('poll_edit.html', poll=poll)
+    user = user_query(poll_id, 0)
+    return render_template('poll_edit.html', poll=poll, user=user)
 
 @app.route('/poll/<poll_id>/summary', methods=['post','get'])
 def poll_summary(poll_id):
     poll = get_poll(poll_id)
+    user = user_query(poll_id, 0)
     responses = get_responses(poll_id)
     questions = get_poll_questions(poll_id)
     question_ids = build_questionid_list(get_poll_questions(poll_id))
@@ -244,7 +244,7 @@ def poll_summary(poll_id):
             summary[get_question_from_list(questions, q_id)] = answers
     print(summary)
 
-    return render_template('poll_summary.html', poll=poll, summary=summary)
+    return render_template('poll_summary.html', poll=poll, summary=summary, user=user)
 
 @app.route('/signout')
 def signOut():
@@ -261,7 +261,3 @@ def load_user(user_id):
 @app.before_request
 def before_request():
     g.user = current_user
-
-
-
-

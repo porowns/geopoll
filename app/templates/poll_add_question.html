@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block body %}
+<h1>Adding Question to {{poll.poll_title}}</h1>
 <script>
   $(document).ready(function() {
     $("#questionTypeInput").change(function() {
@@ -13,7 +14,6 @@
   });
 </script>
 <form method="POST">
-  {{form.hidden_tag()}}
   <div class="form-group">
       <label for="questionTextInput">Question Text</label>
       <input name="question_text" id="questionTextInput" class="form-control" type="text" placeholder="Insert your question text here">
@@ -30,5 +30,6 @@
       <input name="question_choices" id="questionChoiceInput" class="form-control" type="text" placeholder="example,example,example">
     </div>
     <button type="submit" class="btn btn-primary pull-right">Add Question</button>
+    <a href="/poll/{{poll.poll_id}}" class="btn btn-info">View Poll</a>
 </form>
 {% endblock %}
