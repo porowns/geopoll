@@ -14,8 +14,9 @@ Python project for CIS 4930.
 - Results page showing anonymized summary of the answers
 
 # Installation 
-1. Install Python and get Pip
-2. Run `sudo pip3 install flask, flask_login, flask_sqlalchemy, flask_bootstrap, flask_wtf, sqlalchemy_utils`
-3. `cd geopoll`
-4. `python3 run.py`
-5. Open 127.0.0.1:5000 in your web browser.
+1. Checkout the repository `git checkout https://github.com/porowns/geopoll.git`
+2. `cd geopoll`
+3. Install Python3 and Pip3
+4. Install requirements `sudo pip3 install =r requirements`
+5. Run the project `python3 run.py`
+5. Open `127.0.0.1:5000` in your web browser.
