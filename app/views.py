@@ -163,13 +163,10 @@ def showCreatePoll():
 @login_required
 def poll(poll_id, user_id):
     poll = get_poll(poll_id)
-<<<<<<< HEAD
     user = user_query(poll.poll_user_id, 0)
     current_user = session['remember_me']
-=======
     user = user_query(user_id)
     #current_user = session['remember_me']
->>>>>>> c0c9c57986b2a9620bb1ae409ab92517538dc390
     questions = get_poll_questions(poll_id)
     #admin = user.user_id == current_user
     question_dictionary = {}
@@ -193,19 +190,15 @@ def poll(poll_id, user_id):
 
     return render_template('poll.html', poll=poll, user_id=user.user_id, questions=question_dictionary, user=user)
 
-<<<<<<< HEAD
 @app.route('/poll/<poll_id>/publish', methods=['post','get'])
 def poll_publish(poll_id):
+	poll = get_poll(poll_id)
 	publish_poll(poll_id)
-	return redirect(url_for("poll", poll_id=poll_id))
+	return redirect(url_for("poll", poll_id=poll_id, user_id=poll.poll_user_id))
 
-@app.route('/poll/<poll_id>/add-question', methods=['post','get'])
-def poll_add_question(poll_id):
-=======
 @app.route('/poll/<poll_id>/<user_id>/add-question', methods=['post','get'])
 @login_required
 def poll_add_question(poll_id, user_id):
->>>>>>> c0c9c57986b2a9620bb1ae409ab92517538dc390
     poll = get_poll(poll_id)
     user = user_query(user_id)
     print("Start Add Question Method")
