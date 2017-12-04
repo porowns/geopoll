@@ -17,6 +17,6 @@ Python project for CIS 4930.
 1. Checkout the repository `git checkout https://github.com/porowns/geopoll.git`
 2. `cd geopoll`
 3. Install Python3 and Pip3
-4. Install requirements `sudo pip3 install =r requirements`
+4. Install requirements `sudo pip3 install -r requirements`
 5. Run the project `python3 run.py`
 5. Open `127.0.0.1:5000` in your web browser.
