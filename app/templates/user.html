@@ -59,7 +59,7 @@
 							<td>{{poll.poll_title}}</td>
 							<td>0</td>
 							<td>
-         	 			<button class="btn btn-success" onclick="window.location.href='/poll/{{poll.poll_id}}'">Open</button>
+         	 			<button class="btn btn-success" onclick="window.location.href='/poll/{{poll.poll_id}}/{{user.user_id}}'">Open</button>
 							</td>
 						</tr>
 						{% endfor %}

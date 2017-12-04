@@ -30,6 +30,6 @@
       <input name="question_choices" id="questionChoiceInput" class="form-control" type="text" placeholder="example,example,example">
     </div>
     <button type="submit" class="btn btn-primary pull-right">Add Question</button>
-    <a href="/poll/{{poll.poll_id}}" class="btn btn-info">View Poll</a>
+    <a href="/poll/{{poll.poll_id}}/{{user.user_id}}" class="btn btn-info">View Poll</a>
 </form>
 {% endblock %}

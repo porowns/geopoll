@@ -4,11 +4,13 @@ from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import redirect
 from flask_wtf import Form
-from wtforms import validators, StringField, PasswordField, SelectField, IntegerField, RadioField
+from wtforms import validators, StringField, PasswordField, SelectField, IntegerField, RadioField, SubmitField
 from wtforms.validators import InputRequired, Length, Email, NumberRange
 
 from app import app, lm, db
 from app.models.poll_whisperer import insert_new_poll, poll_search, get_polls_by_user, get_poll, insert_new_question, get_poll_questions, insert_new_response, get_responses, change_poll_title, publish_poll
+from app.models.poll_whisperer import insert_new_poll, poll_search, get_polls_by_user, get_poll, insert_new_question, \
+    get_poll_questions, insert_new_response, get_responses, change_poll_title, poll_search_name
 from app.models.table_declaration import User
 from app.models.user_whisperer import insert_new_user, account_sign_in, user_query, user_exists, \
     update_user_demographic_info, check_users, user_search
@@ -31,6 +33,7 @@ class searchForm(Form):
     search_for = RadioField('search for', validators=[InputRequired()],
                                         choices=[('user', 'user'),
                                                  ('poll', 'poll')])
+
 
 class pollForm(Form):
     poll_name = StringField(validators=[InputRequired(), Length(min=4, max=50)])
@@ -152,16 +155,23 @@ def showCreatePoll():
     if form.validate_on_submit():
         _poll_name = form.poll_name.data
         insert_new_poll(_poll_name, g.user.user_name)
-        return redirect(url_for('user', user_name=g.user.user_name))
+        q = poll_search_name(_poll_name)
+        return redirect(url_for('poll_add_question', poll_id=q.poll_id, user_id=g.user.user_id))
     return render_template('createpoll.html',form=form)
 
-@app.route('/poll/<poll_id>', methods=['post','get'])
-def poll(poll_id):
+@app.route('/poll/<poll_id>/<user_id>', methods=['post','get'])
+@login_required
+def poll(poll_id, user_id):
     poll = get_poll(poll_id)
+<<<<<<< HEAD
     user = user_query(poll.poll_user_id, 0)
     current_user = session['remember_me']
+=======
+    user = user_query(user_id)
+    #current_user = session['remember_me']
+>>>>>>> c0c9c57986b2a9620bb1ae409ab92517538dc390
     questions = get_poll_questions(poll_id)
-    admin = user.user_id == current_user
+    #admin = user.user_id == current_user
     question_dictionary = {}
     for question in questions:
         if question.question_type == "choice":
@@ -181,8 +191,9 @@ def poll(poll_id):
         answers = ",".join(answers)
         insert_new_response(poll_id, questions, answers)
 
-    return render_template('poll.html', poll=poll, questions=question_dictionary, user=user,admin=admin)
+    return render_template('poll.html', poll=poll, user_id=user.user_id, questions=question_dictionary, user=user)
 
+<<<<<<< HEAD
 @app.route('/poll/<poll_id>/publish', methods=['post','get'])
 def poll_publish(poll_id):
 	publish_poll(poll_id)
@@ -190,8 +201,13 @@ def poll_publish(poll_id):
 
 @app.route('/poll/<poll_id>/add-question', methods=['post','get'])
 def poll_add_question(poll_id):
+=======
+@app.route('/poll/<poll_id>/<user_id>/add-question', methods=['post','get'])
+@login_required
+def poll_add_question(poll_id, user_id):
+>>>>>>> c0c9c57986b2a9620bb1ae409ab92517538dc390
     poll = get_poll(poll_id)
-    user = user_query(poll_id, 0)
+    user = user_query(user_id)
     print("Start Add Question Method")
     if request.form:
         print("Adding Question")
@@ -200,24 +216,27 @@ def poll_add_question(poll_id):
         _question_text = request.form['question_text']
         _question_choices = request.form['question_choices']
         insert_new_question(_question_text, _question_choices, poll_id)
-        return redirect(url_for('poll', poll_id=poll_id))
+        return redirect(url_for('poll', poll_id=poll_id, user=user, user_id =user.user_id))
     poll = get_poll(poll_id)
-    return render_template('poll_add_question.html', poll=poll,user=user)
+    return render_template('poll_add_question.html', poll=poll,user=g.user)
 
-@app.route('/poll/<poll_id>/edit', methods=['post','get'])
-def poll_edit(poll_id):
+@app.route('/poll/<poll_id>/<user_id>/edit', methods=['post','get'])
+@login_required
+def poll_edit(poll_id, user_id):
     poll = get_poll(poll_id)
-    user = user_query(poll_id, 0)
+    user = user_query(user_id)
     if request.form:
         title = request.form['title']
         change_poll_title(poll_id, title)
-        return redirect(url_for('poll', poll_id=poll_id))
+        return redirect(url_for('poll', poll_id=poll_id,user_id=user.user_id))
     return render_template('poll_edit.html', poll=poll, user=user)
 
-@app.route('/poll/<poll_id>/summary', methods=['post','get'])
-def poll_summary(poll_id):
+
+@app.route('/poll/<poll_id>/<user_id>/summary', methods=['post','get'])
+@login_required
+def poll_summary(poll_id,user_id):
     poll = get_poll(poll_id)
-    user = user_query(poll_id, 0)
+    user = user_query(user_id)
     responses = get_responses(poll_id)
     questions = get_poll_questions(poll_id)
     question_ids = build_questionid_list(get_poll_questions(poll_id))
@@ -253,7 +272,7 @@ def poll_summary(poll_id):
             summary[get_question_from_list(questions, q_id)] = answers
     print(summary)
 
-    return render_template('poll_summary.html', poll=poll, summary=summary, user=user)
+    return render_template('poll_summary.html', poll=poll, summary=summary, user=user, user_id=user.user_id)
 
 @app.route('/signout')
 def signOut():
