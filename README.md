@@ -12,3 +12,10 @@ Python project for CIS 4930.
 - Demographic input for users
 
 - Results page showing anonymized summary of the answers
+
+# Installation 
+1. Install Python and get Pip
+2. Run `sudo pip3 install flask, flask_login, flask_sqlalchemy, flask_bootstrap, flask_wtf, sqlalchemy_utils`
+3. `cd geopoll`
+4. `python3 run.py`
+5. Open 127.0.0.1:5000 in your web browser.
