@@ -82,8 +82,3 @@ def get_responses(poll_id):
         db.session.expunge(response)
     return responses
 
-def get_question_type(questions, question_id):
-    """ extract a questions type from a list of questions (used to prevent tons of database calls)"""
-    for question in questions:
-        if question.question_id == question_id:
-            return question.question_type

@@ -1,0 +1,17 @@
+{% for key, value in summary.items() %}
+  {% if key.question_type == 'response' %}
+    <h1>{{key.question_text}}</h1>
+    <hr>
+    {% for val in value %}
+    {{val}}
+    <br>
+    {% endfor %}
+  {% else %}
+    <h1>{{key.question_text}}</h1>
+    <hr>
+    {% for key,value in value.items() %}
+    {{key}} : {{value}}
+    <br>
+    {% endfor %}
+  {% endif %}
+{% endfor %}

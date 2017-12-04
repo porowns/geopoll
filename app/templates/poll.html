@@ -7,7 +7,7 @@
 {% for key, value in questions.items() %}
   {% if key.question_type == "response" %}
 	<label for="{{key.question_id}}">{{key.question_text}}</label>
-  <input name="{{key.question_id}}" class="form-control" type="text" placeholder="Enter answer here">
+  <input name="{{key.question_id}}" class="form-control" type="text" placeholder="Enter answer here" required>
   {% else %}
 	<label for="{{key.question_id}}">{{key.question_text}}</label>
 	<select name="{{key.question_id}}" class="form-control" id="{{key.question_id}}">

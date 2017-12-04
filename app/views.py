@@ -8,10 +8,11 @@ from wtforms import validators, StringField, PasswordField, SelectField, Integer
 from wtforms.validators import InputRequired, Length, Email, NumberRange
 
 from app import app, lm, db
-from app.models.poll_whisperer import insert_new_poll, poll_search, get_polls_by_user, get_poll, insert_new_question, get_poll_questions, insert_new_response, get_responses, get_question_type
+from app.models.poll_whisperer import insert_new_poll, poll_search, get_polls_by_user, get_poll, insert_new_question, get_poll_questions, insert_new_response, get_responses
 from app.models.table_declaration import User
 from app.models.user_whisperer import insert_new_user, account_sign_in, user_query, user_exists, \
     update_user_demographic_info, check_users, user_search
+from utils.poll import *
 
 
 class signUpForm(Form):
@@ -200,7 +201,7 @@ def poll_add_question(poll_id):
     poll = get_poll(poll_id)
     return render_template('poll_add_question.html', poll=poll, form=form)
 
-@app.route('/poll/edit/<poll_id>', methods=['post','get'])
+@app.route('/poll/<poll_id>/edit', methods=['post','get'])
 def poll_edit(poll_id):
     poll = get_poll(poll_id)
     return render_template('poll_edit.html', poll=poll)
@@ -209,9 +210,41 @@ def poll_edit(poll_id):
 def poll_summary(poll_id):
     poll = get_poll(poll_id)
     responses = get_responses(poll_id)
+    questions = get_poll_questions(poll_id)
+    question_ids = build_questionid_list(get_poll_questions(poll_id))
+    # use utility function to put responses in a useable form
+    structured_responses = []
+    for response in responses:
+        structured_responses.append(build_response_dictionary(response))
+    """
+    Sum up the responses for each question. For free response, we just append to an array.
+    For choice, we need to make an a more advanced dictionary and nest that.
+    {question : answers} // for responses we will have answers = {answer: sum}
+    """
+    summary = {}
+    for q_id in question_ids:
+        answers = []
+        question_type = get_question_type(questions, q_id)
+        if question_type == 'choice':
+            sum_of_answers = {}
+            for response in structured_responses:
+                choice = response[str(q_id)]
+                if choice in sum_of_answers:
+                    sum_of_answers[choice] += 1
+                else:
+                    sum_of_answers[choice] = 1
+            print(sum_of_answers)
+            summary[get_question_from_list(questions, q_id)] = sum_of_answers
 
+        else:
+            for response in structured_responses:
+                choice = response[str(q_id)]
+                answers.append(choice)
+                print(answers)
+            summary[get_question_from_list(questions, q_id)] = answers
+    print(summary)
 
-    return render_template('poll_summary.html', poll=poll)
+    return render_template('poll_summary.html', poll=poll, summary=summary)
 
 @app.route('/signout')
 def signOut():
