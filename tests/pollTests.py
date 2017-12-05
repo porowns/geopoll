@@ -201,6 +201,47 @@ class TestPollMethods(unittest.TestCase):
         self.assertTrue(dbr.poll_id == new_poll.poll_id)
         """
 
+    def testPollChangeTitle(self):
+        """
+            since no delete methods are available a universal user will be checked for each test
+            if said user is not there, it will be created
+        """
+        # Query by name
+        new_user = db.session.query(User).filter_by(user_id=1).first()
+        if new_user is None:
+            # create new user
+            new_user = User(user_name="Unit Test User", user_email="UnitTestEmail@email.com",
+                            user_pword="UnitTestPassword", user_age=0, user_race='',
+                            user_gender='', user_edu='', user_id="1")
+            # add to the db
+            db.session.add(new_user)
+            db.session.commit()
+            db.session.close()
+
+        """
+            since no delete methods are available a universal poll will be chekced for each test
+            if said poll is not there it will be created
+        """
+        new_poll = db.session.query(Poll).filter_by(poll_id=1).first()
+        if new_poll is None:
+            # create new poll
+            new_poll = Poll(poll_title='Unit Test Poll', poll_user_id=new_user.user_id, poll_id=1, poll_published=0)
+            # add to the db
+            db.session.add(new_poll)
+            db.session.commit()
+            db.session.close()
+
+        new_title = "New Unit Test Poll"
+        if change_poll_title(new_poll.poll_id, new_title):
+            print("Successfully Changed Poll's Name")
+            dbPoll = db.session.query(Poll).filter_by(poll_id=1).first()
+            self.assertTrue(dbPoll.poll_title == new_title)
+            self.assertTrue(change_poll_title(new_poll.poll_id, 'Unit Test Poll'))
+            self.assertTrue(dbPoll.poll_title == 'Unit Test Poll')
+        else:
+            print("Did not change poll's name")
+            self.fail(msg='Change_poll_title did not work')
+
 
     def testPollUpdate(self):
         print ("Updated Poll")
