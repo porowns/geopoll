@@ -28,16 +28,21 @@
                 <h2 class="text-muted">Results for '{{search}}'</h2>
             </div>
             <div class="jumbotron">
-                {% for r in results %}
+                {% if type == 'user' %}
+                    {% for r in results %}
                 <p>
-                    {% if type == 'user' %}
                     <a href="{{url_for('user',user_name=r.user_name)}}">{{r.user_name}}</a>
-                    {% endif %}
-                    {% if type == 'poll' %}
-                    {{r.poll_title}}
-                    {% endif %}
                 </p>
-                {% endfor %}
+                    {% endfor %}
+                {% endif %}
+
+                {% if type == 'poll' %}
+                    {% for r, a in results_authors %}
+                <p>
+                    <a href="{{url_for('poll', poll_id=r.poll_id, user_id=r.poll_user_id)}}">{{r.poll_title}} by {{a}}</a>
+                </p>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
 </body>

@@ -141,11 +141,17 @@ def search():
 @app.route('/showResults/<type>/<search>', methods=['POST','GET'])
 @login_required
 def results(search, type):
+    authors = []
+    results = []
     if type == 'user':
         results = user_search(search)
     elif type == 'poll':
         results = poll_search(search)
-    return render_template('results.html',search=search, results=results, type=type, user=g.user)
+        for r in results:
+            q = user_query(r.poll_user_id)
+            authors.append(q.user_name)
+    results_authors = (zip(results,authors))
+    return render_template('results.html', search=search, results=results, results_authors=results_authors, type=type, user=g.user)
 
 
 @app.route('/showCreatePoll', methods=['POST','GET'])
@@ -159,10 +165,11 @@ def showCreatePoll():
         return redirect(url_for('poll_add_question', poll_id=q.poll_id, user_id=g.user.user_id))
     return render_template('createpoll.html',form=form)
 
+
 @app.route('/poll/<poll_id>/<user_id>', methods=['post','get'])
 def poll(poll_id, user_id):
     poll = get_poll(poll_id)
-    user = user_query(poll.poll_user_id, 0)
+    #user = user_query(poll.poll_user_id, 0)
     user = user_query(user_id)
     questions = get_poll_questions(poll_id)
     question_dictionary = {}
@@ -186,11 +193,13 @@ def poll(poll_id, user_id):
 
     return render_template('poll.html', poll=poll, user_id=user.user_id, questions=question_dictionary, user=user)
 
+
 @app.route('/poll/<poll_id>/publish', methods=['post','get'])
 def poll_publish(poll_id):
 	poll = get_poll(poll_id)
 	publish_poll(poll_id)
 	return redirect(url_for("poll", poll_id=poll_id, user_id=poll.poll_user_id))
+
 
 @app.route('/poll/<poll_id>/<user_id>/add-question', methods=['post','get'])
 @login_required
