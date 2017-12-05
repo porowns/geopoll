@@ -6,9 +6,11 @@ from app.models.table_declaration import User, Poll, Question, PollResponse
 from app import db
 from random import randint
 
+new_user = None
+
 class TestPollMethods(unittest.TestCase):
 
-    def testPollCreate(self):
+    def setUp(self):
         """
             since no delete methods are available a universal user will be checked for each test
             if said user is not there, it will be created
@@ -17,13 +19,15 @@ class TestPollMethods(unittest.TestCase):
         new_user = db.session.query(User).filter_by(user_id=1).first()
         if new_user is None:
             # create new user
-            new_user = User(user_name="Unit Test User", user_email="UnitTestEmail@email.com", user_pword="UnitTestPassword", user_age=0, user_race='',
+            new_user = User(user_name="Unit Test User", user_email="UnitTestEmail@email.com",
+                            user_pword="UnitTestPassword", user_age=0, user_race='',
                             user_gender='', user_edu='', user_id="1")
             # add to the db
             db.session.add(new_user)
             db.session.commit()
             db.session.close()
 
+    def testPollCreate(self):
         """
             since no delete methods are available a universal poll will be checked for each test
             if said poll is not there it will be created
@@ -44,22 +48,6 @@ class TestPollMethods(unittest.TestCase):
             print("Poll was already created. Delete the db (or the poll if you can do it safely) to re-run the test")
 
     def testPollQuestionCreate(self):
-        """
-            since no delete methods are available a universal user will be checked for each test
-            if said user is not there, it will be created
-        """
-        # Query by name
-        new_user = db.session.query(User).filter_by(user_id=1).first()
-        if new_user is None:
-            # create new user
-            new_user = User(user_name="Unit Test User", user_email="UnitTestEmail@email.com",
-                            user_pword="UnitTestPassword", user_age=0, user_race='',
-                            user_gender='', user_edu='', user_id="1")
-            # add to the db
-            db.session.add(new_user)
-            db.session.commit()
-            db.session.close()
-
         """
             since no delete methods are available a universal poll will be chekced for each test
             if said poll is not there it will be created
@@ -92,22 +80,6 @@ class TestPollMethods(unittest.TestCase):
 
     def testPollChoiceQuestionCreate(self):
         """
-            since no delete methods are available a universal user will be checked for each test
-            if said user is not there, it will be created
-        """
-        # Query by name
-        new_user = db.session.query(User).filter_by(user_id=1).first()
-        if new_user is None:
-            # create new user
-            new_user = User(user_name="Unit Test User", user_email="UnitTestEmail@email.com",
-                            user_pword="UnitTestPassword", user_age=0, user_race='',
-                            user_gender='', user_edu='', user_id="1")
-            # add to the db
-            db.session.add(new_user)
-            db.session.commit()
-            db.session.close()
-
-        """
             since no delete methods are available a universal poll will be chekced for each test
             if said poll is not there it will be created
         """
@@ -139,22 +111,6 @@ class TestPollMethods(unittest.TestCase):
         self.assertTrue(dbq.question_poll_id == pollID)
 
     def testPollResponse(self):
-        """
-            since no delete methods are available a universal user will be checked for each test
-            if said user is not there, it will be created
-        """
-        # Query by name
-        new_user = db.session.query(User).filter_by(user_id=1).first()
-        if new_user is None:
-            # create new user
-            new_user = User(user_name="Unit Test User", user_email="UnitTestEmail@email.com",
-                            user_pword="UnitTestPassword", user_age=0, user_race='',
-                            user_gender='', user_edu='', user_id="1")
-            # add to the db
-            db.session.add(new_user)
-            db.session.commit()
-            db.session.close()
-
         """
             since no delete methods are available a universal poll will be chekced for each test
             if said poll is not there it will be created
@@ -190,34 +146,22 @@ class TestPollMethods(unittest.TestCase):
         insert_new_response(new_poll.poll_id, questions=questions, answers=answers)
         print("Responded to a Question")
         """
-        dbResponses = db.session.query(PollResponse).filter_by(poll_id=new_poll.poll_id).all()
-        dbr = None
-        for r in dbResponses:
-            if r.poll_response_answers == answers:
-                dbr = r
-        self.assertTrue(dbr is not None)
-        self.assertTrue(dbr.poll_response_answers == answers)
-        self.assertTrue(dbr.poll_response_questions == questions)
-        self.assertTrue(dbr.poll_id == new_poll.poll_id)
+        if(publish_poll(new_poll.poll_id)):
+            dbResponses = db.session.query(PollResponse).filter_by(poll_id=new_poll.poll_id).all()
+            dbr = None
+            for r in dbResponses:
+                if r.poll_response_answers == answers:
+                    dbr = r
+            self.assertTrue(dbr is not None)
+            self.assertTrue(dbr.poll_response_answers == answers)
+            self.assertTrue(dbr.poll_response_questions == questions)
+            self.assertTrue(dbr.poll_id == new_poll.poll_id)
+        else:
+            print("Poll not published")
+            self.fail("Publish_poll did not succeed")
         """
 
     def testPollChangeTitle(self):
-        """
-            since no delete methods are available a universal user will be checked for each test
-            if said user is not there, it will be created
-        """
-        # Query by name
-        new_user = db.session.query(User).filter_by(user_id=1).first()
-        if new_user is None:
-            # create new user
-            new_user = User(user_name="Unit Test User", user_email="UnitTestEmail@email.com",
-                            user_pword="UnitTestPassword", user_age=0, user_race='',
-                            user_gender='', user_edu='', user_id="1")
-            # add to the db
-            db.session.add(new_user)
-            db.session.commit()
-            db.session.close()
-
         """
             since no delete methods are available a universal poll will be chekced for each test
             if said poll is not there it will be created
@@ -243,22 +187,6 @@ class TestPollMethods(unittest.TestCase):
             self.fail(msg='Change_poll_title did not work')
 
     def testPublishPoll(self):
-        """
-                    since no delete methods are available a universal user will be checked for each test
-                    if said user is not there, it will be created
-                """
-        # Query by name
-        new_user = db.session.query(User).filter_by(user_id=1).first()
-        if new_user is None:
-            # create new user
-            new_user = User(user_name="Unit Test User", user_email="UnitTestEmail@email.com",
-                            user_pword="UnitTestPassword", user_age=0, user_race='',
-                            user_gender='', user_edu='', user_id="1")
-            # add to the db
-            db.session.add(new_user)
-            db.session.commit()
-            db.session.close()
-
         """
             since no delete methods are available a universal poll will be chekced for each test
             if said poll is not there it will be created
