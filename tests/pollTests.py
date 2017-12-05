@@ -1,25 +1,58 @@
 import unittest
-from models.poll_whisperer import insert_new_question, insert_new_poll
-from models.table_declaration import User, Poll
+from app.models.poll_whisperer import insert_new_question, insert_new_poll
+from app.models.user_whisperer import user_query
+from app.models.table_declaration import User, Poll
+from app import db
 
-class TestUserMethods(unittest.TestCase):
+class TestPollMethods(unittest.TestCase):
 
     def testPollCreate(self):
+        """
+            since no delete methods are available a universal user will be checked for each test
+            if said user is not there, it will be created
+        """
+        # Query by name
+        new_user = db.session.query(User).filter_by(user_id=1).first()
+        if new_user is None:
+            # create new user
+            new_user = User(user_name="Unit Test User", user_email="UnitTestEmail@email.com", user_pword="UnitTestPassword", user_age=0, user_race='',
+                            user_gender='', user_edu='', user_id="1")
+            # add to the db
+            db.session.add(new_user)
+            db.session.commit()
+            db.session.close()
+
         title = "poll title"
-        user = User(user_name = 'name', user_email = 'email@email.com', user_pword = 'password')
-        insert_new_poll(title, user)
+        insert_new_poll(title, new_user.user_name)
         print ("Created Poll")
         """
         Once create_poll is made we will assert that self.poll
         has all the desired properties here
         """
+        dbPoll = db.session.query(Poll).filter_by(poll_title=title).first()
+        self.assertTrue(dbPoll.poll_title == title)
 
     def testPollQuestionCreate(self):
-        poll = Poll('Test', User(user_name='name', user_email='email', user_pword='pword'))
+        """
+            since no delete methods are available a universal user will be checked for each test
+            if said user is not there, it will be created
+        """
+        # Query by name
+        new_user = db.session.query(User).filter_by(user_id=1).first()
+        if new_user is None:
+            # create new user
+            new_user = User(user_name="Unit Test User", user_email="UnitTestEmail@email.com",
+                            user_pword="UnitTestPassword", user_age=0, user_race='',
+                            user_gender='', user_edu='', user_id="1")
+            # add to the db
+            db.session.add(new_user)
+            db.session.commit()
+            db.session.close()
+        poll = Poll(poll_title='Test', poll_user_id=new_user.user_id)
         questionType = 'Multiple Choice'
         quesitonText = 'Is this a question?'
         pollID = poll.poll_id
-        insert_new_question(question_type=questionType, question_text=quesitonText, poll_id=pollID)
+        insert_new_question(question_text=quesitonText, choices=None, poll_id=pollID)
         print("New Question Created")
 
     def testPollUpdate(self):
