@@ -1,25 +1,37 @@
 import unittest
-from models.table_declaration import User, engine
-from models.user_whisperer import insert_new_user, account_sign_in, user_query
+from app.models.table_declaration import User
+from app.models.user_whisperer import *
+from app import db
 
 class TestUserMethods(unittest.TestCase):
 
     def testUserCreate(self):
-        name = 'name'
-        password = 'password'
-        email = 'email@email.com'
-        insert_new_user(name, password, email)
-        print ("Created user")
-        """
-        Once create_user is made we will assert that self.user 
-        has all the desired properties here
-        """
+        # Query by name
+        new_user = db.session.query(User).filter_by(user_id=1).first()
+        if new_user is None:
+            # create new user
+            name = 'Unit Test User'
+            password = 'UnitTestPassword'
+            email = 'UnitTestEmail@email.com'
+            insert_new_user(name, password, email)
+            print ("Created User")
+            self.assertTrue(new_user.user_name == name)
+            self.assertTrue(new_user.user_pword == password)
+        else:
+            print("User had already been created. To test this again, delete the database and rerun")
 
     def testUserQuery(self):
-        name = 'name'
-        email = 'email@email.com'
-        password = 'password'
-        insert_new_user(name, email, password)
+        # Query by name
+        new_user = db.session.query(User).filter_by(user_id=1).first()
+        name = new_user.user_name
+        email = new_user.user_email
+        password = new_user.user_pword
+        if new_user is None:
+            # create new user
+            name = 'Unit Test User'
+            password = 'UnitTestPassword'
+            email = 'UnitTestEmail@email.com'
+            insert_new_user(name, password, email)
 
         # Query by name
         nameQuery = user_query(name, 1)
