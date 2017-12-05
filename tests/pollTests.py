@@ -242,6 +242,42 @@ class TestPollMethods(unittest.TestCase):
             print("Did not change poll's name")
             self.fail(msg='Change_poll_title did not work')
 
+    def testPublishPoll(self):
+        """
+                    since no delete methods are available a universal user will be checked for each test
+                    if said user is not there, it will be created
+                """
+        # Query by name
+        new_user = db.session.query(User).filter_by(user_id=1).first()
+        if new_user is None:
+            # create new user
+            new_user = User(user_name="Unit Test User", user_email="UnitTestEmail@email.com",
+                            user_pword="UnitTestPassword", user_age=0, user_race='',
+                            user_gender='', user_edu='', user_id="1")
+            # add to the db
+            db.session.add(new_user)
+            db.session.commit()
+            db.session.close()
+
+        """
+            since no delete methods are available a universal poll will be chekced for each test
+            if said poll is not there it will be created
+        """
+        new_poll = db.session.query(Poll).filter_by(poll_id=1).first()
+        if new_poll is None:
+            # create new poll
+            new_poll = Poll(poll_title='Unit Test Poll', poll_user_id=new_user.user_id, poll_id=1, poll_published=0)
+            # add to the db
+            db.session.add(new_poll)
+            db.session.commit()
+            db.session.close()
+
+        if(publish_poll(new_poll.poll_id)):
+            print("Successfully Published the Poll")
+            self.assertTrue(new_poll.poll_published == 1)
+            new_poll.poll_published = 0
+            self.assertTrue(new_poll.poll_published == 0)
+
 
     def testPollUpdate(self):
         print ("Updated Poll")
