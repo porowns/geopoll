@@ -1,6 +1,6 @@
 import unittest
 import sys
-from app.models.poll_whisperer import insert_new_question, insert_new_poll
+from app.models.poll_whisperer import *
 from app.models.user_whisperer import user_query
 from app.models.table_declaration import User, Poll, Question, PollResponse
 from app import db
@@ -138,6 +138,70 @@ class TestPollMethods(unittest.TestCase):
         self.assertTrue(dbq.question_choices == choices)
         self.assertTrue(dbq.question_poll_id == pollID)
 
+    def testPollResponse(self):
+        """
+            since no delete methods are available a universal user will be checked for each test
+            if said user is not there, it will be created
+        """
+        # Query by name
+        new_user = db.session.query(User).filter_by(user_id=1).first()
+        if new_user is None:
+            # create new user
+            new_user = User(user_name="Unit Test User", user_email="UnitTestEmail@email.com",
+                            user_pword="UnitTestPassword", user_age=0, user_race='',
+                            user_gender='', user_edu='', user_id="1")
+            # add to the db
+            db.session.add(new_user)
+            db.session.commit()
+            db.session.close()
+
+        """
+            since no delete methods are available a universal poll will be chekced for each test
+            if said poll is not there it will be created
+        """
+        new_poll = db.session.query(Poll).filter_by(poll_id=1).first()
+        if new_poll is None:
+            # create new poll
+            new_poll = Poll(poll_title='Unit Test Poll', poll_user_id=new_user.user_id, poll_id=1, poll_published=0)
+            # add to the db
+            db.session.add(new_poll)
+            db.session.commit()
+            db.session.close()
+
+        """
+            this question involves the use of at least one question in the poll. Query the poll
+             and if it has no questions, create one
+        """
+        poll_q = db.session.query(Question).filter_by(question_type="response").first()
+        if poll_q is None:
+            # create new question
+            rand = randint(0, sys.maxsize)
+            questionText = 'Unit Test Question #'
+            questionText += str(rand)
+            poll_q = Question(question_poll_id=new_poll.poll_id, question_text=questionText, question_type="response",
+                              question_choices=None)
+            db.session.add(poll_q)
+            db.session.commit()
+            db.session.close()
+
+        # do a poll response
+        questions = str(poll_q)
+        answers = "This is an answer to a Unit Test Question"
+        insert_new_response(new_poll.poll_id, questions=questions, answers=answers)
+        print("Responded to a Question")
+        """
+        dbResponses = db.session.query(PollResponse).filter_by(poll_id=new_poll.poll_id).all()
+        dbr = None
+        for r in dbResponses:
+            if r.poll_response_answers == answers:
+                dbr = r
+        self.assertTrue(dbr is not None)
+        self.assertTrue(dbr.poll_response_answers == answers)
+        self.assertTrue(dbr.poll_response_questions == questions)
+        self.assertTrue(dbr.poll_id == new_poll.poll_id)
+        """
+
+
     def testPollUpdate(self):
         print ("Updated Poll")
         """
@@ -175,12 +239,6 @@ class TestPollMethods(unittest.TestCase):
     def testPollAddQuestion(self):
         """
         A test to test adding a question to a poll
-        """
-        pass
-
-    def testPollResponse(self):
-        """
-        A test to test poll responses however we choose to do that
         """
         pass
 
