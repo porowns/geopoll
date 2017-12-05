@@ -6,7 +6,7 @@ from app import db
 class TestUserMethods(unittest.TestCase):
 
     def testUserCreate(self):
-        # Query by name
+        # Query by id
         new_user = db.session.query(User).filter_by(user_id=1).first()
         if new_user is None:
             # create new user
@@ -21,7 +21,7 @@ class TestUserMethods(unittest.TestCase):
             print("User had already been created. To test this again, delete the database and rerun")
 
     def testUserQuery(self):
-        # Query by name
+        # Query by id
         new_user = db.session.query(User).filter_by(user_id=1).first()
         name = new_user.user_name
         email = new_user.user_email
@@ -58,8 +58,35 @@ class TestUserMethods(unittest.TestCase):
         self.assertTrue(idQuery.user_email == email)
         self.assertTrue(idQuery.user_pword == password)
 
-    def testUserUpdate(self):
-        print ("Updated user")
+    def testUserDemographicUpdate(self):
+        # Query by id
+        new_user = db.session.query(User).filter_by(user_id=1).first()
+        name = new_user.user_name
+        email = new_user.user_email
+        password = new_user.user_pword
+        if new_user is None:
+            # create new user
+            name = 'Unit Test User'
+            password = 'UnitTestPassword'
+            email = 'UnitTestEmail@email.com'
+            insert_new_user(name, password, email)
+
+        age = '20'
+        race = 'White'
+        gender = 'Male'
+        edu = 'Bachelor\'s Degree'
+        if(update_user_demographic_info(name, age, race, gender, edu)):
+            print ("Updated User Demographic")
+            dbUser = db.session.query(User).filter_by(user_name=name).first()
+            self.assertTrue(dbUser.user_name == name)
+            self.assertTrue(dbUser.user_email == email)
+            self.assertTrue(dbUser.user_age == int(age))
+            self.assertTrue(dbUser.user_race == race)
+            self.assertTrue(dbUser.user_gender == gender)
+            self.assertTrue(dbUser.user_edu == edu)
+        else:
+            print ("Did not update user demographic")
+            self.fail("Update_user_demographic_info failed")
         """
         Once update_user is made we will assert that self.user's 
         properties fit the new properties given
