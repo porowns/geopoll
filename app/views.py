@@ -21,7 +21,7 @@ class signUpForm(Form):
     name = StringField('username', validators=[InputRequired(), Length(min=4,max=20)])
     email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50)])
     password = PasswordField('password', validators=[InputRequired(),Length(min=8, max=50)])
-
+    confirm = PasswordField('repeat password', validators=[InputRequired(), Length(min=8, max=50)])
 
 class signInForm(Form):
     name = StringField('username or email', validators=[InputRequired(), Length(min=4,max=50)])
@@ -65,16 +65,19 @@ def main():
 def showSignUp():
     form = signUpForm(request.form)
     if form.validate_on_submit():
-        _hashed_pword = generate_password_hash(form.password.data,'sha256')
-        _name = form.name.data
-        _email = form.email.data
-
-        if user_exists(_name) is False:
-            insert_new_user(_name, _email, _hashed_pword)
-            print('user: ' + _name + ' has been entered into the db')
-            return redirect(url_for('main'))
+        if form.password.data == form.confirm.data:
+            _hashed_pword = generate_password_hash(form.password.data,'sha256')
+            _name = form.name.data
+            _email = form.email.data
+            if user_exists(_name) is False:
+                insert_new_user(_name, _email, _hashed_pword)
+                print('user: ' + _name + ' has been entered into the db')
+                return redirect(url_for('user', user_name=_name))
+            else:
+                flash("That username is already taken.")
         else:
-            print("That username is already taken.")
+            flash('password does not match')
+
     return render_template('signup.html', form=form)
 
 
@@ -84,19 +87,19 @@ def showSignIn():
     if form.validate_on_submit():
         _acc_name = form.name.data
         _pword = form.password.data
-
+        '''
         if g.user is not None and g.user.is_authenticated:
             print('user is already logged in')
             return redirect(url_for('user', user_name=g.user.user_name))
-
+        '''
         q = account_sign_in(_acc_name, _pword)
         if q is not None:
-            session['remember_me'] = q.user_id
+            #session['remember_me'] = q.user_id
             login_user(q)
             print('SignIn successful')
             return redirect(url_for('user', user_name=q.user_name))
         else:
-            print('Invalid Information. Please try again.')
+            flash('Invalid Information. Please try again.')
     return render_template('signin.html', form=form)
 
 
@@ -190,7 +193,7 @@ def poll(poll_id, user_id):
         questions = ",".join(questions)
         answers = ",".join(answers)
         insert_new_response(poll_id, questions, answers)
-
+    #print('POLL REQUEST', request.path)
     return render_template('poll.html', poll=poll, user_id=user.user_id, questions=question_dictionary, user=user)
 
 
@@ -272,11 +275,22 @@ def poll_summary(poll_id,user_id):
 
     return render_template('poll_summary.html', poll=poll, summary=summary, user=user, user_id=user.user_id)
 
+
 @app.route('/signout')
 def signOut():
     logout_user()
     print('SignOut was Success')
     return redirect(url_for('main'))
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html')
+
+
+@app.errorhandler(405)
+def method_not_found(e):
+    return render_template('405.html')
 
 
 @lm.user_loader

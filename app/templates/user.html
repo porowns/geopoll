@@ -40,7 +40,12 @@
             </div>
         </div>
         <div id="poll_results">
-          <h1>Your Polls</h1>
+            {% if g.user == user %}
+            <h1>Your Polls</h1>
+            {% endif %}
+            {% if g.user != user %}
+            <h1> {{user.user_name}}'s Polls </h1>
+            {% endif %}
           <hr>
           
           <table class="table">
