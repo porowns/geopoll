@@ -37,7 +37,7 @@
 <html>
   <body>
     <script>
-      function initMap() {
+      function getLoc() {
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(function(position) {
@@ -54,7 +54,7 @@
       }
     </script>
     <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSoxa5SQ6PGmE8N8e_tdwEB-r-kauVnso&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSoxa5SQ6PGmE8N8e_tdwEB-r-kauVnso&callback=getLoc">
     </script>
   </body>
 </html>

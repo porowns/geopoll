@@ -4,6 +4,50 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 <h1>Responses for {{poll.poll_title}}</h1>
+<div id="map_div"></div>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <br>
+    <div id="map"></div>
+    <script>
+      var map;
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 30, lng: -84},
+          zoom: 6
+        });
+
+            {% for loc in locations %}
+               var myLatLng = {lat: {{loc[0]}}, lng: {{loc[1]}}};
+               var marker = new google.maps.Marker({
+                  position: myLatLng,
+                  map: map
+               });
+            {% endfor %}
+      }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSoxa5SQ6PGmE8N8e_tdwEB-r-kauVnso&callback=initMap">
+    </script>
+  </body>
+</html>
 {% for key, value in summary.items() %}
   {% if key.question_type == 'response' %}
     <h3>{{key.question_text}}</h3>
