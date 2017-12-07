@@ -167,9 +167,7 @@ def showCreatePoll():
     if form.validate_on_submit():
         _poll_name = form.poll_name.data
         poll_id = insert_new_poll(_poll_name, g.user.user_name)
-        q = poll_search_name(_poll_name)
-        return redirect(url_for('poll_add_question', poll_id=poll_id,
-            user_id=g.user.user_id))
+        return redirect(url_for('poll_add_question', poll_id=poll_id, user_id=g.user.user_id))
     return render_template('createpoll.html',form=form)
 
 
