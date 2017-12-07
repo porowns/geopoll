@@ -59,6 +59,14 @@ def user_exists(user_name):
         return True
 
 
+def email_exists(user_email):
+    q = db.session.query(User).filter_by(user_email=user_email).first()
+    if q is None:
+        return False
+    else:
+        return True
+
+
 def update_user_demographic_info(name, age, race, gender, edu):
     q = user_query(name,1)
     print('q.user_name from update demo', q.user_name)

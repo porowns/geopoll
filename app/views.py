@@ -72,13 +72,16 @@ def showSignUp():
             _name = form.name.data
             _email = form.email.data
             if user_exists(_name) is False:
-                insert_new_user(_name, _email, _hashed_pword)
-                q = account_sign_in(_name, form.password.data)
-                login_user(q)
-                print('user: ' + _name + ' has been entered into the db')
-                return redirect(url_for('user', user_name=_name))
+                if email_exists(_email) is False:
+                    insert_new_user(_name, _email, _hashed_pword)
+                    q = account_sign_in(_name, form.password.data)
+                    login_user(q)
+                    print('user: ' + _name + ' has been entered into the db')
+                    return redirect(url_for('user', user_name=_name))
+                else:
+                    flash('That email already exists')
             else:
-                flash("That username is already taken.")
+                flash('That username is already taken.')
         else:
             flash('password does not match')
 
