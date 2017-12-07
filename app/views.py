@@ -1,4 +1,4 @@
-from flask import render_template, json, request, flash, url_for, g, session
+from flask import render_template, json, request, flash, url_for, g, session, jsonify
 from flask_login import login_user, current_user, logout_user, login_required
 
 from werkzeug.security import generate_password_hash
@@ -187,12 +187,18 @@ def poll(poll_id, user_id):
     if request.method == 'POST':
         questions = []
         answers = []
+        lat, lon = None, None
         for answer in request.form:
-            questions.append(answer)
-            answers.append(request.form[answer])
+            if answer == 'lat':
+                lat = request.form[answer]
+            elif answer == 'lon':
+                lon = request.form[answer]
+            else:
+                questions.append(answer)
+                answers.append(request.form[answer])
         questions = ",".join(questions)
         answers = ",".join(answers)
-        insert_new_response(poll_id, questions, answers)
+        insert_new_response(poll_id, questions, answers, lat, lon)
     #print('POLL REQUEST', request.path)
     return render_template('poll.html', poll=poll, user_id=user.user_id, questions=question_dictionary, user=user)
 

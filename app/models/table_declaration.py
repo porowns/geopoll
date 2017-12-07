@@ -96,4 +96,6 @@ class PollResponse(db.Model):
     poll_response_id = db.Column(db.Integer, primary_key=True)
     poll_response_questions = db.Column(db.String(256))
     poll_response_answers = db.Column(db.String(256))
+    poll_response_lat = db.Column(db.String(256))
+    poll_response_lon = db.Column(db.String(256))
     poll_id = db.Column(db.Integer, ForeignKey('polls.poll_id'))

@@ -6,3 +6,4 @@ SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'geo.db')
 SQLALCHEMY_MIGRATE_PRO = os.path.join(basedir, 'db_repository')
 CSRF_ENABLED = True
 SECRET_KEY = 'smelly-socks'
+GOOGLEMAPS_KEY = 'AIzaSyCSoxa5SQ6PGmE8N8e_tdwEB-r-kauVnso'

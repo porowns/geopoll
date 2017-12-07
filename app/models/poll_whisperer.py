@@ -73,11 +73,13 @@ def get_poll_questions(poll_id):
         db.session.expunge(question)
     return questions
 
-def insert_new_response(poll_id, questions, answers):
+def insert_new_response(poll_id, questions, answers, lat, lon):
     poll_response = PollResponse(
             poll_response_questions=questions,
             poll_response_answers=answers,
-            poll_id=poll_id
+            poll_id=poll_id,
+            poll_response_lat=lat,
+            poll_response_lon=lon
             )
     db.session.add(poll_response)
     db.session.commit()
