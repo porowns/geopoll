@@ -284,8 +284,6 @@ def poll_summary(poll_id,user_id):
                 print(answers)
             summary[get_question_from_list(questions, q_id)] = answers
     locations = get_responses_geolocation_list(poll_id)
-    print(locations)
-    print(summary)
 
     return render_template('poll_summary.html', poll=poll, summary=summary,
             user=user, user_id=user.user_id, locations=locations)

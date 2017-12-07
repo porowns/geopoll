@@ -11,10 +11,7 @@ def insert_new_poll(title, user_name):
     new_poll = Poll(poll_title=title, poll_user_id=q.user_id, poll_published=0)
     db.session.add(new_poll)
     db.session.commit()
-    db.session.expunge(new_poll)
-    poll_id = new_poll.poll_id
     db.session.close()
-    return poll_id
 
 '''
 def insert_new_question(question_type, question_text, poll_id):
