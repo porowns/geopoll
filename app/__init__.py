@@ -9,7 +9,7 @@ db = SQLAlchemy(app)
 
 lm = LoginManager()
 lm.init_app(app)
-lm.login_view = 'signIn'
+lm.login_view = 'showSignIn'
 
 bootstrap = Bootstrap(app)
 

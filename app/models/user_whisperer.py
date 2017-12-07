@@ -21,16 +21,18 @@ def check_users():
 
 
 def account_sign_in(accName, pword):
-    if '@' in accName:
-        email = accName
-        q = db.session.query(User).filter_by(user_email=email).first()
+    if user_query(accName, 1):
+        if '@' in accName:
+            email = accName
+            q = db.session.query(User).filter_by(user_email=email).first()
+        else:
+            name = accName
+            q = db.session.query(User).filter_by(user_name=name).first()
+        db.session.close()
+        if check_password_hash(q.user_pword, pword):
+            return q
     else:
-        name = accName
-        q = db.session.query(User).filter_by(user_name=name).first()
-    db.session.close()
-    if check_password_hash(q.user_pword, pword):
-        return q
-    return None
+        return None
 
 
 def user_search(data):

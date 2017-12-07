@@ -104,3 +104,14 @@ def publish_poll(poll_id):
 	db.session.add(poll)
 	db.session.commit()
 	return True
+
+def get_responses_geolocation_list(poll_id):
+    responses = get_responses(poll_id)
+    geolocation_list = []
+    for response in responses:
+        cords = []
+        cords.append(response.response_lat)
+        cords.append(response.response_lon)
+        geolocation_list.append(cords)
+    return geolocation_list
+
