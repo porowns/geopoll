@@ -4,24 +4,26 @@ from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import redirect
 from flask_wtf import Form
-from wtforms import validators, StringField, PasswordField, SelectField, IntegerField, RadioField, SubmitField
+from wtforms import (validators, StringField, PasswordField,
+        SelectField, IntegerField, RadioField, SubmitField)
 from wtforms.validators import InputRequired, Length, Email, NumberRange
 
 from app import app, lm, db
-from app.models.poll_whisperer import insert_new_poll, poll_search, get_polls_by_user, get_poll, insert_new_question, get_poll_questions, insert_new_response, get_responses, change_poll_title, publish_poll
-from app.models.poll_whisperer import insert_new_poll, poll_search, get_polls_by_user, get_poll, insert_new_question, \
-    get_poll_questions, insert_new_response, get_responses, change_poll_title, poll_search_name
+from app.models.poll_whisperer import *
+from app.models.user_whisperer import *
 from app.models.table_declaration import User
-from app.models.user_whisperer import insert_new_user, account_sign_in, user_query, user_exists, \
-    update_user_demographic_info, check_users, user_search
 from utils.poll import *
 
 
 class signUpForm(Form):
-    name = StringField('username', validators=[InputRequired(), Length(min=4,max=20)])
-    email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50)])
-    password = PasswordField('password', validators=[InputRequired(),Length(min=8, max=50)])
-    confirm = PasswordField('repeat password', validators=[InputRequired(), Length(min=8, max=50)])
+    name = StringField('username', validators=[InputRequired(),
+        Length(min=4,max=20)])
+    email = StringField('email', validators=[InputRequired(),
+        Email(message='Invalid email'), Length(max=50)])
+    password = PasswordField('password',
+            validators=[InputRequired(),Length(min=8, max=50)])
+    confirm = PasswordField('repeat password',
+            validators=[InputRequired(), Length(min=8, max=50)])
 
 class signInForm(Form):
     name = StringField('username or email', validators=[InputRequired(), Length(min=4,max=50)])
@@ -154,7 +156,8 @@ def results(search, type):
             q = user_query(r.poll_user_id)
             authors.append(q.user_name)
     results_authors = (zip(results,authors))
-    return render_template('results.html', search=search, results=results, results_authors=results_authors, type=type, user=g.user)
+    return render_template('results.html', search=search, results=results,
+            results_authors=results_authors, type=type, user=g.user)
 
 
 @app.route('/showCreatePoll', methods=['POST','GET'])
@@ -163,9 +166,10 @@ def showCreatePoll():
     form = pollForm()
     if form.validate_on_submit():
         _poll_name = form.poll_name.data
-        insert_new_poll(_poll_name, g.user.user_name)
+        poll_id = insert_new_poll(_poll_name, g.user.user_name)
         q = poll_search_name(_poll_name)
-        return redirect(url_for('poll_add_question', poll_id=q.poll_id, user_id=g.user.user_id))
+        return redirect(url_for('poll_add_question', poll_id=poll_id,
+            user_id=g.user.user_id))
     return render_template('createpoll.html',form=form)
 
 
@@ -200,7 +204,8 @@ def poll(poll_id, user_id):
         answers = ",".join(answers)
         insert_new_response(poll_id, questions, answers, lat, lon)
     #print('POLL REQUEST', request.path)
-    return render_template('poll.html', poll=poll, user_id=user.user_id, questions=question_dictionary, user=user)
+    return render_template('poll.html', poll=poll, user_id=user.user_id,
+            questions=question_dictionary, user=user)
 
 
 @app.route('/poll/<poll_id>/publish', methods=['post','get'])
@@ -223,7 +228,8 @@ def poll_add_question(poll_id, user_id):
         _question_text = request.form['question_text']
         _question_choices = request.form['question_choices']
         insert_new_question(_question_text, _question_choices, poll_id)
-        return redirect(url_for('poll', poll_id=poll_id, user=user, user_id =user.user_id))
+        return redirect(url_for('poll', poll_id=poll_id, user=user,
+            user_id =user.user_id))
     poll = get_poll(poll_id)
     return render_template('poll_add_question.html', poll=poll,user=g.user)
 
@@ -277,9 +283,12 @@ def poll_summary(poll_id,user_id):
                 answers.append(choice)
                 print(answers)
             summary[get_question_from_list(questions, q_id)] = answers
+    locations = get_responses_geolocation_list(poll_id)
+    print(locations)
     print(summary)
 
-    return render_template('poll_summary.html', poll=poll, summary=summary, user=user, user_id=user.user_id)
+    return render_template('poll_summary.html', poll=poll, summary=summary,
+            user=user, user_id=user.user_id, locations=locations)
 
 
 @app.route('/signout')
