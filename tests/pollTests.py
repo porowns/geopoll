@@ -143,7 +143,7 @@ class TestPollMethods(unittest.TestCase):
         # do a poll response
         questions = str(poll_q)
         answers = "This is an answer to a Unit Test Question"
-        insert_new_response(new_poll.poll_id, questions=questions, answers=answers)
+        insert_new_response(new_poll.poll_id, questions=questions, answers=answers, lat=None, lon=None)
         print("Responded to a Question")
         """
         if(publish_poll(new_poll.poll_id)):
