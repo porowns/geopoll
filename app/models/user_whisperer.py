@@ -21,15 +21,18 @@ def check_users():
 
 
 def account_sign_in(accName, pword):
-    if '@' in accName:
+    if user_query(accName,2):
         email = accName
         q = db.session.query(User).filter_by(user_email=email).first()
-    else:
+        db.session.close()
+        if check_password_hash(q.user_pword, pword):
+            return q
+    elif user_query(accName, 1):
         name = accName
         q = db.session.query(User).filter_by(user_name=name).first()
-    db.session.close()
-    if check_password_hash(q.user_pword, pword):
-        return q
+        db.session.close()
+        if check_password_hash(q.user_pword, pword):
+            return q
     return None
 
 
