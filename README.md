@@ -20,3 +20,7 @@ Python project for CIS 4930.
 4. Install requirements `sudo pip3 install -r requirements`
 5. Run the project `python3 run.py`
 5. Open `127.0.0.1:5000` in your web browser.
+
+# Other Project Details
+For our libraries and stories (separation of work), please view our wiki on GitHub.
+https://github.com/porowns/wiki
